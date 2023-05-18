@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:dice_icons/dice_icons.dart';
 //import 'package:model_viewer_plus/model_viewer_plus.dart';
+import 'package:mobilki_app/call_of_cthulhu/character_sheet/skills/skills_view.dart';
 
 void main() =>
     runApp(MaterialApp(debugShowCheckedModeBanner: false, home: MyHomePage()));
@@ -16,7 +17,7 @@ class _MyHomePageState extends State<MyHomePage> {
     //Main()
     //Skills()
     const Center(child: Text('Main', style: TextStyle(fontSize: 72))),
-    const Center(child: Text('Skills', style: TextStyle(fontSize: 72))),
+    const SkillsView(),
     const Center(child: Text('Equipment', style: TextStyle(fontSize: 72))),
     const Center(child: Text('Notes', style: TextStyle(fontSize: 72))),
     const Center(child: Text('Dices', style: TextStyle(fontSize: 72)))
