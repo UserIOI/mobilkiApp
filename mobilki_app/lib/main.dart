@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:dice_icons/dice_icons.dart';
 //import 'package:model_viewer_plus/model_viewer_plus.dart';
@@ -13,9 +15,8 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   int index = 0;
   final screens = [
-    //Main()
+    const Main(),
     //Skills()
-    const Center(child: Text('Main', style: TextStyle(fontSize: 72))),
     const Center(child: Text('Skills', style: TextStyle(fontSize: 72))),
     const Center(child: Text('Equipment', style: TextStyle(fontSize: 72))),
     const Center(child: Text('Notes', style: TextStyle(fontSize: 72))),
@@ -69,6 +70,234 @@ class _MyHomePageState extends State<MyHomePage> {
           ),
         ),
       );
+}
+
+class Main extends StatefulWidget {
+  const Main({
+    super.key,
+  });
+
+  @override
+  State<Main> createState() => _MainState();
+}
+
+class _MainState extends State<Main> {
+  late TextEditingController controller;
+
+  @override
+  void initState() {
+    super.initState();
+    controller = TextEditingController();
+  }
+
+  @override
+  void dispose() {
+    controller.dispose();
+    super.dispose();
+  }
+
+  Map<String, String?> investigatorAboutData = {
+    "Name": "",
+    "Occupation": "",
+    "Age": "",
+    "Residence": "",
+    "PlaceOfBirth": "",
+  };
+
+  @override
+  Widget build(BuildContext context) {
+    Future<String?> openDialog(String title) => showDialog<String>(
+          context: context,
+          builder: (context) => AlertDialog(
+            title: Text(title),
+            content: TextField(
+              controller: controller,
+              autofocus: true,
+            ),
+            actions: [
+              TextButton(
+                  onPressed: () {
+                    //aboutData[title] =
+                    Navigator.of(context).pop(controller.text);
+                    
+                  },
+                  child: Text("Confirm"))
+            ],
+          ),
+        );
+
+    return MaterialApp(
+      home: Card(
+        margin: EdgeInsets.all(20),
+        color: Color.fromARGB(255, 225, 216, 190),
+        child: Column(
+          children: [
+            FittedBox(
+              child: Card(
+                elevation: 5,
+                margin: EdgeInsets.all(30),
+                child: Padding(
+                  padding: const EdgeInsets.all(10.0),
+                  child: Text(
+                    'Investigator Data',
+                    style: TextStyle(
+                      fontSize: 25,
+                    ),
+                  ),
+                ),
+              ),
+            ),
+            FittedBox(
+              child: Card(
+                elevation: 5,
+                margin: EdgeInsets.only(left: 30, right: 30),
+                child: Padding(
+                  padding: const EdgeInsets.all(20.0),
+                  child: Row(
+                    children: [
+                      SizedBox(
+                        height: 100,
+                        width: 100,
+                        child: Placeholder(),
+                      ),
+                      SizedBox(
+                        width: 20,
+                      ),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          GestureDetector(
+                            child: InvestigatorAboutInfo(
+                                label: "Name",
+                                data: investigatorAboutData["Name"]),
+                            onTap: () async {
+                              final data = await openDialog("Name");
+                              setState(() {
+                                investigatorAboutData["Name"] = data;
+                              });
+                            },
+                          ),
+                          GestureDetector(
+                            child: InvestigatorAboutInfo(
+                              label: "Occupation",
+                              data: investigatorAboutData["Occupation"],
+                            ),
+                            onTap: () async {
+                              final data = await openDialog("Occupation");
+                              setState(() {
+                                investigatorAboutData["Occupation"] = data;
+                              });
+                            },
+                          ),
+                          GestureDetector(
+                            child: InvestigatorAboutInfo(
+                                label: "Age",
+                                data: investigatorAboutData["Age"]),
+                            onTap: () async {
+                              final data = await openDialog("Age");
+                              setState(() {
+                                investigatorAboutData["Age"] = data;
+                              });
+                            },
+                          ),
+                          GestureDetector(
+                            child: InvestigatorAboutInfo(
+                              label: "Residence",
+                              data: investigatorAboutData["Residence"],
+                            ),
+                            onTap: () async {
+                              final data = await openDialog("Residence");
+                              setState(() {
+                                investigatorAboutData["Residence"] = data;
+                              });
+                            },
+                          ),
+                          GestureDetector(
+                            child: InvestigatorAboutInfo(
+                              label: "Place of birth",
+                              data: investigatorAboutData["Place of birth"],
+                            ),
+                            onTap: () async {
+                              final data = await openDialog("Place of birth");
+                              setState(() {
+                                investigatorAboutData["Place of birth"] = data;
+                              });
+                            },
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+            FittedBox(
+              child: Card(
+                margin: EdgeInsets.only(top: 13, bottom: 13),
+                elevation: 5,
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Text(
+                    "Characteristics",
+                    style: TextStyle(fontSize: 18),
+                  ),
+                ),
+              ),
+            ),
+            Flexible(
+              child: GridView.builder(
+                padding: EdgeInsets.only(
+                  left: 50,
+                  right: 50,
+                ),
+                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: MediaQuery.of(context).size.width ~/ 120,
+                  crossAxisSpacing: 5,
+                  mainAxisSpacing: 5,
+                ),
+                itemCount: 8,
+                shrinkWrap: true,
+                itemBuilder: (context, index) {
+                  return Container(
+                    color: Color.fromARGB(255, 211, 150, 52),
+                    height: 30,
+                    width: 120,
+                    child: Center(
+                      child: ListTile(leading: Icon(Icons.abc)),
+                    ),
+                  );
+                },
+              ),
+            ),
+            SizedBox(
+              height: 15,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class InvestigatorAboutInfo extends StatelessWidget {
+  final String label;
+  final String? data;
+  const InvestigatorAboutInfo({
+    required this.label,
+    required this.data,
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      color: Colors.amber,
+      margin: EdgeInsets.only(
+        top: 3,
+      ),
+      child: Text('$label: $data'),
+    );
+  }
 }
 
 void _onVerticalDragStartHandler() {
