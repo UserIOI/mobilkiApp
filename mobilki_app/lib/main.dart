@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:dice_icons/dice_icons.dart';
-//import 'package:model_viewer_plus/model_viewer_plus.dart';
+import 'package:mobilki_app/dices.dart';
+import 'dices.dart';
 
 void main() =>
     runApp(MaterialApp(debugShowCheckedModeBanner: false, home: MyHomePage()));
@@ -12,19 +13,38 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   int index = 0;
+  double dragStartPosition = 0, dragEndPosition = 0, navBarHeight = 70;
+  double deviceWidth = 0, deviceHeight = 0;
   final screens = [
-    //Main()
-    //Skills()
     const Center(child: Text('Main', style: TextStyle(fontSize: 72))),
     const Center(child: Text('Skills', style: TextStyle(fontSize: 72))),
     const Center(child: Text('Equipment', style: TextStyle(fontSize: 72))),
     const Center(child: Text('Notes', style: TextStyle(fontSize: 72))),
-    const Center(child: Text('Dices', style: TextStyle(fontSize: 72)))
   ];
   @override
   Widget build(BuildContext context) => GestureDetector(
-        //onHorizontalDragStart: _onHorizontalDragStartHandler,
-        //onVerticalDragStart: _onVerticalDragStartHandler,
+        onVerticalDragStart: (DragStartDetails details) => {
+          deviceHeight = MediaQuery.of(context).size.height.toDouble(),
+          deviceWidth = MediaQuery.of(context).size.width.toDouble(),
+          dragStartPosition = details.globalPosition.dy.toDouble(),
+        },
+        onVerticalDragUpdate: (DragUpdateDetails details) => {
+          dragEndPosition = details.globalPosition.dy,
+        },
+        onVerticalDragEnd: (DragEndDetails details) => {
+          // print("start position "),
+          // print(dragStartPosition),
+          // print("end position "),
+          // print(dragEndPosition),
+          if (dragStartPosition > deviceHeight - navBarHeight &&
+              dragStartPosition - dragEndPosition > 0.3 * deviceHeight)
+            {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => dices()),
+              ),
+            }
+        },
         child: Scaffold(
           body: screens[index],
           bottomNavigationBar: NavigationBarTheme(
@@ -60,33 +80,9 @@ class _MyHomePageState extends State<MyHomePage> {
                   icon: Icon(Icons.note_add_sharp, size: 30),
                   label: 'Notes',
                 ),
-                // NavigationDestination(
-                //   icon: Icon(DiceIcons.dice5, size: 30),
-                //   label: 'Dices',
-                // ),
               ],
             ),
           ),
         ),
       );
 }
-
-void _onVerticalDragStartHandler() {
-  print("aaaaa");
-}
-
-void _onHorizontalDragStartHandler() {
-  print("bbbbbb");
-}
-
-// class MyApp1 extends StatelessWidget {
-//   @override
-//   Widget build(BuildContext context) {
-//     return MaterialApp(
-//       home: Scaffold(
-//         appBar: AppBar(title: Text("Model Viewer")),
-//         body: Image(),
-//       ),
-//     );
-//   }
-// }
