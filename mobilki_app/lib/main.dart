@@ -82,20 +82,6 @@ class Main extends StatefulWidget {
 }
 
 class _MainState extends State<Main> {
-  late TextEditingController controller;
-
-  @override
-  void initState() {
-    super.initState();
-    controller = TextEditingController();
-  }
-
-  @override
-  void dispose() {
-    controller.dispose();
-    super.dispose();
-  }
-
   Map<String, String?> investigatorAboutData = {
     "Name": "",
     "Occupation": "",
@@ -104,8 +90,32 @@ class _MainState extends State<Main> {
     "PlaceOfBirth": "",
   };
 
+  List<String> characteristic = [
+    "STR",
+    "CON",
+    "DEX",
+    "INT",
+    "SIZ",
+    "POW",
+    "APP",
+    "EDU",
+  ];
+
+  List<int> characteristicLevel = [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+  ];
+
   @override
   Widget build(BuildContext context) {
+    //handles dialog  pop up
+    final controller = TextEditingController();
     Future<String?> openDialog(String title) => showDialog<String>(
           context: context,
           builder: (context) => AlertDialog(
@@ -116,163 +126,190 @@ class _MainState extends State<Main> {
             ),
             actions: [
               TextButton(
-                  onPressed: () {
-                    //aboutData[title] =
-                    Navigator.of(context).pop(controller.text);
-                    
-                  },
-                  child: Text("Confirm"))
+                  onPressed: () => Navigator.of(context).pop(controller.text),
+                  child: Text("Confirm")),
+              TextButton(
+                onPressed: () {
+                  controller.text = ""; //clear textfield xd but works
+                  Navigator.of(context).pop(null);
+                },
+                child: Text("Cancel"),
+              ),
             ],
           ),
         );
 
     return MaterialApp(
-      home: Card(
-        margin: EdgeInsets.all(20),
-        color: Color.fromARGB(255, 225, 216, 190),
-        child: Column(
-          children: [
-            FittedBox(
-              child: Card(
-                elevation: 5,
-                margin: EdgeInsets.all(30),
-                child: Padding(
-                  padding: const EdgeInsets.all(10.0),
-                  child: Text(
-                    'Investigator Data',
-                    style: TextStyle(
-                      fontSize: 25,
+      home: Scaffold(
+        body: SafeArea(
+          child: Card(
+            margin: EdgeInsets.all(20),
+            color: Color.fromARGB(255, 225, 216, 190),
+            child: Column(
+              children: [
+                FittedBox(
+                  child: Card(
+                    elevation: 5,
+                    margin: EdgeInsets.all(30),
+                    child: Padding(
+                      padding: const EdgeInsets.all(10.0),
+                      child: Text(
+                        'Investigator Data',
+                        style: TextStyle(
+                          fontSize: 25,
+                        ),
+                      ),
                     ),
                   ),
                 ),
-              ),
-            ),
-            FittedBox(
-              child: Card(
-                elevation: 5,
-                margin: EdgeInsets.only(left: 30, right: 30),
-                child: Padding(
-                  padding: const EdgeInsets.all(20.0),
-                  child: Row(
-                    children: [
-                      SizedBox(
-                        height: 100,
-                        width: 100,
-                        child: Placeholder(),
-                      ),
-                      SizedBox(
-                        width: 20,
-                      ),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
+                FittedBox(
+                  child: Card(
+                    elevation: 5,
+                    margin: EdgeInsets.only(left: 30, right: 30),
+                    child: Padding(
+                      padding: const EdgeInsets.all(20.0),
+                      child: Row(
                         children: [
-                          GestureDetector(
-                            child: InvestigatorAboutInfo(
-                                label: "Name",
-                                data: investigatorAboutData["Name"]),
-                            onTap: () async {
-                              final data = await openDialog("Name");
-                              setState(() {
-                                investigatorAboutData["Name"] = data;
-                              });
-                            },
+                          SizedBox(
+                            height: 100,
+                            width: 100,
+                            child: Placeholder(), //photo
                           ),
-                          GestureDetector(
-                            child: InvestigatorAboutInfo(
-                              label: "Occupation",
-                              data: investigatorAboutData["Occupation"],
-                            ),
-                            onTap: () async {
-                              final data = await openDialog("Occupation");
-                              setState(() {
-                                investigatorAboutData["Occupation"] = data;
-                              });
-                            },
+                          SizedBox(
+                            width: 20,
                           ),
-                          GestureDetector(
-                            child: InvestigatorAboutInfo(
-                                label: "Age",
-                                data: investigatorAboutData["Age"]),
-                            onTap: () async {
-                              final data = await openDialog("Age");
-                              setState(() {
-                                investigatorAboutData["Age"] = data;
-                              });
-                            },
-                          ),
-                          GestureDetector(
-                            child: InvestigatorAboutInfo(
-                              label: "Residence",
-                              data: investigatorAboutData["Residence"],
-                            ),
-                            onTap: () async {
-                              final data = await openDialog("Residence");
-                              setState(() {
-                                investigatorAboutData["Residence"] = data;
-                              });
-                            },
-                          ),
-                          GestureDetector(
-                            child: InvestigatorAboutInfo(
-                              label: "Place of birth",
-                              data: investigatorAboutData["Place of birth"],
-                            ),
-                            onTap: () async {
-                              final data = await openDialog("Place of birth");
-                              setState(() {
-                                investigatorAboutData["Place of birth"] = data;
-                              });
-                            },
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              GestureDetector(
+                                child: InvestigatorAboutInfo(
+                                    label: "Name",
+                                    data: investigatorAboutData["Name"]),
+                                onTap: () async {
+                                  final data = await openDialog("Name");
+                                  setState(() {
+                                    if (data != null)
+                                      investigatorAboutData["Name"] = data;
+                                  });
+                                },
+                              ),
+                              GestureDetector(
+                                child: InvestigatorAboutInfo(
+                                  label: "Occupation",
+                                  data: investigatorAboutData["Occupation"],
+                                ),
+                                onTap: () async {
+                                  final data = await openDialog("Occupation");
+                                  setState(() {
+                                    if (data != null)
+                                      investigatorAboutData["Occupation"] =
+                                          data;
+                                  });
+                                },
+                              ),
+                              GestureDetector(
+                                child: InvestigatorAboutInfo(
+                                    label: "Age",
+                                    data: investigatorAboutData["Age"]),
+                                onTap: () async {
+                                  final data = await openDialog("Age");
+                                  setState(() {
+                                    if (data != null)
+                                      investigatorAboutData["Age"] = data;
+                                  });
+                                },
+                              ),
+                              GestureDetector(
+                                child: InvestigatorAboutInfo(
+                                  label: "Residence",
+                                  data: investigatorAboutData["Residence"],
+                                ),
+                                onTap: () async {
+                                  final data = await openDialog("Residence");
+                                  setState(() {
+                                    if (data != null)
+                                      investigatorAboutData["Residence"] = data;
+                                  });
+                                },
+                              ),
+                              GestureDetector(
+                                child: InvestigatorAboutInfo(
+                                  label: "Place of birth",
+                                  data: investigatorAboutData["PlaceOfBirth"],
+                                ),
+                                onTap: () async {
+                                  final data =
+                                      await openDialog("Place of birth");
+                                  setState(() {
+                                    if (data != null)
+                                      investigatorAboutData["PlaceOfBirth"] =
+                                          data;
+                                  });
+                                },
+                              ),
+                            ],
                           ),
                         ],
                       ),
-                    ],
-                  ),
-                ),
-              ),
-            ),
-            FittedBox(
-              child: Card(
-                margin: EdgeInsets.only(top: 13, bottom: 13),
-                elevation: 5,
-                child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Text(
-                    "Characteristics",
-                    style: TextStyle(fontSize: 18),
-                  ),
-                ),
-              ),
-            ),
-            Flexible(
-              child: GridView.builder(
-                padding: EdgeInsets.only(
-                  left: 50,
-                  right: 50,
-                ),
-                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: MediaQuery.of(context).size.width ~/ 120,
-                  crossAxisSpacing: 5,
-                  mainAxisSpacing: 5,
-                ),
-                itemCount: 8,
-                shrinkWrap: true,
-                itemBuilder: (context, index) {
-                  return Container(
-                    color: Color.fromARGB(255, 211, 150, 52),
-                    height: 30,
-                    width: 120,
-                    child: Center(
-                      child: ListTile(leading: Icon(Icons.abc)),
                     ),
-                  );
-                },
-              ),
+                  ),
+                ),
+                FittedBox(
+                  child: Card(
+                    margin: EdgeInsets.only(top: 30, bottom: 20),
+                    elevation: 5,
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Text(
+                        "Characteristics",
+                        style: TextStyle(fontSize: 18),
+                      ),
+                    ),
+                  ),
+                ),
+                Flexible(
+                  child: Padding(
+                    padding: const EdgeInsets.only(
+                      right: 50,
+                      left: 50,
+                    ),
+                    child: ListView.builder(
+                      itemCount: characteristic.length,
+                      itemBuilder: (context, index) {
+                        return Container(
+                          margin: EdgeInsets.only(bottom: 10),
+                          decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(20),
+                              color: Color.fromARGB(255, 235, 162, 28)),
+                          child: ListTile(
+                            title: Text(characteristic[index]),
+                            trailing:
+                                Text(characteristicLevel[index].toString()),
+                            onTap: () async {
+                              final data =
+                                  await openDialog(characteristic[index]);
+                              if (data != null &&
+                                  int.tryParse(data.toString()) != null) {
+                                setState(() {
+                                  characteristicLevel[index] =
+                                      int.parse(data.toString());
+                                });
+                              } else {
+                                controller.text = "";                            
+                              }
+                            },
+                          ),
+                        );
+                      },
+                    ),
+                  ),
+                ),
+                SizedBox(
+                  height: 30,
+                ),
+              ],
             ),
-            SizedBox(
-              height: 15,
-            ),
-          ],
+          ),
         ),
       ),
     );
