@@ -14,121 +14,23 @@ class dices extends StatefulWidget {
 class _ParentWidgetState extends State<dices> {
   //GlobalKey<diceWidget> keyK = GlobalKey<diceWidget>();
   double dragStartPosition = 0, dragEndPosition = 0, navBarHeight = 70;
-  double deviceWidth = 0, deviceHeight = 0;
+  late double deviceWidth = MediaQuery.of(context).size.width.toDouble(),
+      deviceHeight = MediaQuery.of(context).size.height.toDouble();
   bool clearing = false;
   int d4 = 0, d6 = 0, d8 = 0, d10 = 1, d12 = 0, d20 = 0, d100 = 1, wynik = 0;
   List<dice> _columnChildren = [];
   List<List<double>> cordinates = [];
-  String idk = 'd20/d20_1.png';
 
-  String baseForAssets = 'assets/images/';
-
-  //** Zmienne przechowujace obrazy kosci */
-  var images4 = ['d4/d4_1.png', 'd4/d4_2.png', 'd4/d4_3.png', 'd4/d4_4.png'];
-  var images6 = [
-    'd6/d6_1.png',
-    'd6/d6_2.png',
-    'd6/d6_3.png',
-    'd6/d6_4.png',
-    'd6/d6_5.png',
-    'd6/d6_6.png'
-  ];
-  var images8 = [
-    'd8/d8_1.png',
-    'd8/d8_2.png',
-    'd8/d8_3.png',
-    'd8/d8_4.png',
-    'd8/d8_5.png',
-    'd8/d8_5.png',
-    'd8/d8_5.png',
-    'd8/d8_5.png'
-  ];
-  var images10 = [
-    'd10/d10_1.png',
-    'd10/d10_2.png',
-    'd10/d10_3.png',
-    'd10/d10_4.png',
-    'd10/d10_5.png',
-    'd10/d10_6.png',
-    'd10/d10_7.png',
-    'd10/d10_8.png',
-    'd10/d10_9.png',
-    'd10/d10_10.png'
-  ];
-  var images12 = [
-    'd12/d12_1.png',
-    'd12/d12_2.png',
-    'd12/d12_3.png',
-    'd12/d12_4.png',
-    'd12/d12_5.png',
-    'd12/d12_6.png',
-    'd12/d12_7.png',
-    'd12/d12_8.png',
-    'd12/d12_9.png',
-    'd12/d12_10.png',
-    'd12/d12_11.png',
-    'd12/d12_12.png'
-  ];
-  var images20 = [
-    'd20/d20_1.png',
-    'd20/d20_2.png',
-    'd20/d20_3.png',
-    'd20/d20_4.png',
-    'd20/d20_5.png',
-    'd20/d20_6.png',
-    'd20/d20_7.png',
-    'd20/d20_8.png',
-    'd20/d20_9.png',
-    'd20/d20_10.png',
-    'd20/d20_11.png',
-    'd20/d20_12.png',
-    'd20/d20_13.png',
-    'd20/d20_14.png',
-    'd20/d20_15.png',
-    'd20/d20_16.png',
-    'd20/d20_17.png',
-    'd20/d20_18.png',
-    'd20/d20_19.png',
-    'd20/d20_20.png'
-  ];
-  var images100 = [
-    'd100/d100_00.png',
-    'd100/d100_10.png',
-    'd100/d100_20.png',
-    'd100/d100_30.png',
-    'd100/d100_40.png',
-    'd100/d100_50.png',
-    'd100/d100_60.png',
-    'd100/d100_70.png',
-    'd100/d100_80.png',
-    'd100/d100_90.png',
-  ];
   Random random = Random();
-  late int i = random.nextInt(500) - 70, j = random.nextInt(500) - 70;
-  //** Mapa do przechowywania setow obrazow w zaleznosci od kosci */
-  late Map imgSelector = {
-    4: images4,
-    6: images6,
-    8: images8,
-    10: images10,
-    12: images12,
-    20: images20,
-    100: images100,
-  };
-
-  roll() {
-    for (var x in _columnChildren) {
-      x.getKey();
-    }
-  }
+  int i = 0, j = 0;
 
   bool checkCollision(List<double> obj1, List<double> obj2) {
     double x1 = obj1[0], y1 = obj1[1];
     double x2 = obj2[0], y2 = obj2[1];
-    double obj1Right = x1 + 80;
-    double obj1Bottom = y1 + 80;
-    double obj2Right = x2 + 80;
-    double obj2Bottom = y2 + 80;
+    double obj1Right = x1 + 70;
+    double obj1Bottom = y1 + 70;
+    double obj2Right = x2 + 70;
+    double obj2Bottom = y2 + 70;
 
     if (obj1Right >= x2 &&
         x1 <= obj2Right &&
@@ -153,21 +55,28 @@ class _ParentWidgetState extends State<dices> {
 
   void findCords() {
     Random random = Random();
-    int it = 15;
-    while (i > 0) {
-      i = random.nextInt(500) - 70;
-      j = random.nextInt(500) - 70;
-      cordinates.add([i.toDouble(), j.toDouble()]);
-      if (!checkAllCollisions(cordinates)) {
-        print("$i $j");
-        break;
-      } else {
-        cordinates.remove([i, j]);
+    if (cordinates.length == 0) {
+      i = random.nextInt(deviceWidth.toInt() - 70);
+      j = random.nextInt(430);
+      //print("jeden $i $j");
+    } else {
+      while (true) {
+        i = random.nextInt(deviceWidth.toInt() - 70);
+        j = random.nextInt(430);
+        cordinates.add([i.toDouble(), j.toDouble()]);
+        if (!checkAllCollisions(cordinates)) {
+          //print("$i $j");
+          break;
+        } else {
+          cordinates.remove([i, j]);
+        }
       }
     }
   }
 
   void throwDices() {
+    i = 0;
+    j = 0;
     Random random = Random();
     setState(() {
       _columnChildren.clear();
@@ -197,8 +106,6 @@ class _ParentWidgetState extends State<dices> {
           x: i,
           y: j,
         ));
-        i += 100;
-        j += 100;
         x--;
       });
     }
@@ -212,8 +119,6 @@ class _ParentWidgetState extends State<dices> {
           x: i,
           y: j,
         ));
-        i += 100;
-        j += 100;
         x--;
       });
     }
@@ -227,8 +132,6 @@ class _ParentWidgetState extends State<dices> {
           x: i,
           y: j,
         ));
-        i += 100;
-        j += 100;
         x--;
       });
     }
@@ -242,8 +145,6 @@ class _ParentWidgetState extends State<dices> {
           x: i,
           y: j,
         ));
-        i += 100;
-        j += 100;
         x--;
       });
     }
@@ -257,8 +158,6 @@ class _ParentWidgetState extends State<dices> {
           x: i,
           y: j,
         ));
-        i += 100;
-        j += 100;
         x--;
       });
     }
@@ -272,16 +171,9 @@ class _ParentWidgetState extends State<dices> {
           x: i,
           y: j,
         ));
-        i += 100;
-        j += 100;
         x--;
       });
     }
-
-    roll();
-
-    i = 0;
-    j = 0;
   }
 
   void clearDices() {
@@ -325,7 +217,7 @@ class _ParentWidgetState extends State<dices> {
               Container(
                 height: 500,
                 width: MediaQuery.of(context).size.width,
-                color: Colors.deepPurple,
+                color: Color.fromARGB(255, 255, 255, 255),
                 child: Stack(
                   children: _columnChildren,
                 ),

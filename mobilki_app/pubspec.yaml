@@ -38,6 +38,7 @@ dependencies:
   dice_icons: ^0.1.5
   d20: ^0.3.1+1
   three_dart: ^0.0.16
+  flutter_svg: ^2.0.5
 
 dev_dependencies:
   flutter_test:

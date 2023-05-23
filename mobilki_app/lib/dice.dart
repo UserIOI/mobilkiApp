@@ -121,7 +121,12 @@ class diceWidget extends State<dice> {
   int x, y, nrKosci, i = 0;
 
   diceWidget(this.x, this.y, this.nrKosci);
-  late String idk = imgSelector[nrKosci][0];
+  //late String idk = imgSelector[nrKosci][0];
+
+  //** Random kosc */
+  Random random = Random();
+  late String idk =
+      imgSelector[nrKosci][random.nextInt(imgSelector[nrKosci].length)];
 
   void throwing() async {
     Random random = Random();
@@ -131,11 +136,19 @@ class diceWidget extends State<dice> {
       setState(() {
         idk = imgSelector[nrKosci][i];
         i++;
-        if (i == nrKosci) i = 0;
+        if (i == imgSelector[nrKosci].length) i = 0;
       });
-      await Future.delayed(const Duration(milliseconds: 40));
+      await Future.delayed(const Duration(milliseconds: 60));
       a--;
     }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      throwing();
+    });
   }
 
   @override
