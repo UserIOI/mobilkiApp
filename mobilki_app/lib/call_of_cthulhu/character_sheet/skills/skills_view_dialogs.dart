@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'skill.dart';
 
 Future<bool?> showEditAbilityDialog(BuildContext context, Skill skill) {
@@ -42,7 +43,6 @@ class _EditAbilityDialogState extends State<EditAbilityDialog> {
 
   void textEditingListener() {
     int level = userLevelController.text.isEmpty ? 0 : int.parse(userLevelController.text);
-    print("Listening: $level");
     if(level != userLevel) {
       updateUserLevel(level, false);
     }
@@ -55,7 +55,6 @@ class _EditAbilityDialogState extends State<EditAbilityDialog> {
   }
 
   void updateUserLevel(int level, bool updateTextField) {
-    print("Updated level: $level");
     setState(() {
       userLevel = level;
       if(updateTextField) {
@@ -101,20 +100,33 @@ class _EditAbilityDialogState extends State<EditAbilityDialog> {
                 children: [
                   IconButton(
                       onPressed: canBeLower ? () {
-                        updateUserLevel(userLevel - 1, true);
+                        if(widget.skill.baseSuccessChance + userLevel > 99) {
+                          updateUserLevel(99 - widget.skill.baseSuccessChance, true);
+                        } else {
+                          updateUserLevel(userLevel - 1, true);
+                        }
                       } : null,
                       icon: const Icon(Icons.chevron_left)),
                   SizedBox(
                     width: 40,
                     child: TextField(
                       controller: userLevelController,
-                      maxLength: 2,
+                      inputFormatters: [
+                        FilteringTextInputFormatter.digitsOnly,
+                        LengthLimitingTextInputFormatter(2),
+                      ],
+                      //maxLength: 2,
                       keyboardType: TextInputType.number,
                     ),
                   ),
-                  IconButton(onPressed: canBeHigher ? () {
-                    updateUserLevel(userLevel + 1, true);
-                  } : null,
+                  IconButton(
+                      onPressed: canBeHigher ? () {
+                        if(userLevel < 0) {
+                          updateUserLevel(0, true);
+                        } else {
+                          updateUserLevel(userLevel + 1, true);
+                        }
+                      } : null,
                       icon: const Icon(Icons.chevron_right)),
                 ],
               ),
