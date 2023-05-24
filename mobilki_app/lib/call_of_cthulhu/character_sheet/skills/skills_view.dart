@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:mobilki_app/call_of_cthulhu/character_sheet/skills/change_column_count_dialog.dart';
 import 'skill.dart';
 import 'skill_card.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
+import 'new_ability_dialog.dart';
 
 class SkillsView extends StatefulWidget {
   const SkillsView({Key? key}) : super(key: key);
@@ -48,7 +50,13 @@ class _SkillsViewState extends State<SkillsView> {
                               //showNewAbilityDialog(context);
                               break;
                           case "change_column_count":
-                              //showChangeColumnCountDialog(context);
+                              showChangeColumnCountDialog(context, columnCount).then((value) {
+                                if(value != null) {
+                                  setState(() {
+                                    columnCount = value;
+                                  });
+                                }
+                              });
                               break;
                       }
                   },
@@ -66,7 +74,7 @@ class _SkillsViewState extends State<SkillsView> {
             ),
         ],
       ),
-      );
+    );
   }
 
   // currently not used

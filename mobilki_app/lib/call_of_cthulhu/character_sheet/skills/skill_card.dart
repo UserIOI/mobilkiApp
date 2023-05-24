@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'skill.dart';
-import 'skills_view_dialogs.dart';
+import 'edit_ability_dialog.dart';
 
 class SkillCard extends StatefulWidget {
   const SkillCard(this.skill, {Key? key}) : super(key: key);
