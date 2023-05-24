@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'skill.dart';
 import 'skill_card.dart';
+import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 
 class SkillsView extends StatefulWidget {
   const SkillsView({Key? key}) : super(key: key);
@@ -55,15 +56,21 @@ class _SkillsViewState extends State<SkillsView> {
             ],
           ),
           Flexible(
-            child: ListView(
-              children: generateSkillCards(columnCount),
+            child: MasonryGridView.count(
+              itemCount: displayableList.length,
+              crossAxisCount: columnCount,
+              itemBuilder: (context, index) {
+                final skill = displayableList[index];
+                return SkillCard(skill);
+              }),
             ),
-          ),
         ],
       ),
       );
   }
 
+  // currently not used
+  // kept just in case I wanted to change staggeredGrid back to listView
   List<Widget> generateSkillCards(int columnCount) {
     List<List<Skill>> dividedList = [];
     double length = displayableList.length / columnCount;
