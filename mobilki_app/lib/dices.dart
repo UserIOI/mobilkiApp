@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'dart:math';
 
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:mobilki_app/dice.dart';
 
@@ -27,15 +28,8 @@ class _ParentWidgetState extends State<dices> {
   bool checkCollision(List<double> obj1, List<double> obj2) {
     double x1 = obj1[0], y1 = obj1[1];
     double x2 = obj2[0], y2 = obj2[1];
-    double obj1Right = x1 + 70;
-    double obj1Bottom = y1 + 70;
-    double obj2Right = x2 + 70;
-    double obj2Bottom = y2 + 70;
 
-    if (obj1Right >= x2 &&
-        x1 <= obj2Right &&
-        obj1Bottom >= y2 &&
-        y1 <= obj2Bottom) {
+    if ((x1 - x2).abs() < 70 && (y1 - y2).abs() < 70) {
       return true; // Collision detected
     } else {
       return false; // No collision
@@ -55,21 +49,17 @@ class _ParentWidgetState extends State<dices> {
 
   void findCords() {
     Random random = Random();
-    if (cordinates.length == 0) {
-      i = random.nextInt(deviceWidth.toInt() - 70);
-      j = random.nextInt(430);
-      //print("jeden $i $j");
-    } else {
-      while (true) {
-        i = random.nextInt(deviceWidth.toInt() - 70);
-        j = random.nextInt(430);
-        cordinates.add([i.toDouble(), j.toDouble()]);
-        if (!checkAllCollisions(cordinates)) {
-          //print("$i $j");
-          break;
-        } else {
-          cordinates.remove([i, j]);
-        }
+    while (true) {
+      i = random.nextInt((MediaQuery.of(context).size.width - 75).toInt());
+      j = random
+          .nextInt((MediaQuery.of(context).size.height * 0.6 - 75).toInt());
+      cordinates.add([i.toDouble(), j.toDouble()]);
+      if (!checkAllCollisions(cordinates)) {
+        print("$i $j");
+        break;
+      } else {
+        print("removed");
+        cordinates.removeLast();
       }
     }
   }
@@ -77,7 +67,6 @@ class _ParentWidgetState extends State<dices> {
   void throwDices() {
     i = 0;
     j = 0;
-    Random random = Random();
     setState(() {
       _columnChildren.clear();
     });
@@ -213,25 +202,25 @@ class _ParentWidgetState extends State<dices> {
         body: Container(
           child: Column(
             children: [
-              //** To wywalic */
               Container(
-                height: 500,
+                height: MediaQuery.of(context).size.height * 0.68,
                 width: MediaQuery.of(context).size.width,
-                color: Color.fromARGB(255, 255, 255, 255),
+                decoration: BoxDecoration(
+                    borderRadius: BorderRadius.all(Radius.circular(15)),
+                    border: Border.all(
+                        color: Color.fromARGB(255, 23, 23, 24), width: 3)),
                 child: Stack(
                   children: _columnChildren,
                 ),
               ),
-              //** XXXXXXXXXXX */
-              Center(
-                  child: Text(
-                "$wynik",
-                style: TextStyle(fontSize: 40),
-              )),
+              // Text(
+              //   "$wynik",
+              //   style: TextStyle(fontSize: deviceHeight * 0.04),
+              // ),
               Container(
                 color: Colors.amber,
-                height: 160.0,
-                width: 300.0,
+                height: MediaQuery.of(context).size.height * 0.2,
+                width: MediaQuery.of(context).size.width,
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
@@ -242,6 +231,8 @@ class _ParentWidgetState extends State<dices> {
                           child: Column(children: [
                             Text("d4"),
                             ElevatedButton(
+                              style: ElevatedButton.styleFrom(
+                                  backgroundColor: Colors.red),
                               child: Text('$d4'),
                               onPressed: () {
                                 setState(() {
@@ -338,13 +329,14 @@ class _ParentWidgetState extends State<dices> {
                     ),
                   ],
                 ),
-                //** Dodac unity ???
               ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
-                  //** Rozmiar buttonów oraz wyrzej dać widgety */
                   ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.red,
+                        minimumSize: Size(110, 45)),
                     onPressed: () {
                       setState(() {
                         clearDices();
@@ -353,6 +345,9 @@ class _ParentWidgetState extends State<dices> {
                     child: const Text('CLEAR'),
                   ),
                   ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.red,
+                        minimumSize: Size(110, 45)),
                     onPressed: () {
                       setState(() {
                         throwDices();
@@ -364,7 +359,7 @@ class _ParentWidgetState extends State<dices> {
               ),
             ]
                 .map((widget) => Padding(
-                      padding: const EdgeInsets.all(2),
+                      padding: const EdgeInsets.all(4),
                       child: widget,
                     ))
                 .toList(),

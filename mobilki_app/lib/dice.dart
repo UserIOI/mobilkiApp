@@ -41,9 +41,9 @@ class diceWidget extends State<dice> {
     'd8/d8_3.png',
     'd8/d8_4.png',
     'd8/d8_5.png',
-    'd8/d8_5.png',
-    'd8/d8_5.png',
-    'd8/d8_5.png'
+    'd8/d8_6.png',
+    'd8/d8_7.png',
+    'd8/d8_8.png'
   ];
   var images10 = [
     'd10/d10_1.png',
@@ -131,7 +131,7 @@ class diceWidget extends State<dice> {
   void throwing() async {
     Random random = Random();
     int a = random.nextInt(50) + 25;
-    print(a);
+    //print(a);
     while (a > 0) {
       setState(() {
         idk = imgSelector[nrKosci][i];
