@@ -2,6 +2,8 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:dice_icons/dice_icons.dart';
+import 'package:flutter/services.dart';
+import 'package:image_picker/image_picker.dart';
 //import 'package:model_viewer_plus/model_viewer_plus.dart';
 
 void main() =>
@@ -82,6 +84,8 @@ class Main extends StatefulWidget {
 }
 
 class _MainState extends State<Main> {
+  File? investigatorImage;
+
   Map<String, String?> investigatorAboutData = {
     "Name": "",
     "Occupation": "",
@@ -112,6 +116,24 @@ class _MainState extends State<Main> {
     0,
   ];
 
+  Future pickImage(ImageSource imageSource) async {
+    try {
+      final image = await ImagePicker().pickImage(source: imageSource);
+
+      if (image == null) {
+        return;
+      }
+
+      final imageTemp = File(image.path);
+
+      setState(() {
+        investigatorImage = imageTemp;
+      });
+    } on PlatformException catch (e) {
+      print("Can not pick image: $e");
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     //handles dialog  pop up
@@ -123,11 +145,80 @@ class _MainState extends State<Main> {
             content: TextField(
               controller: controller,
               autofocus: true,
+              onSubmitted: (_) => Navigator.of(context).pop(controller.text),
             ),
             actions: [
               TextButton(
                   onPressed: () => Navigator.of(context).pop(controller.text),
                   child: Text("Confirm")),
+              TextButton(
+                onPressed: () {
+                  controller.text = ""; //clear textfield xd but works
+                  Navigator.of(context).pop(null);
+                },
+                child: Text("Cancel"),
+              ),
+            ],
+          ),
+        );
+
+    Future profilePictureSelectionDialog() => showDialog(
+          context: context,
+          builder: (context) => AlertDialog(
+            title: Text("Select investigator's picture"),
+            content: Padding(
+              padding: const EdgeInsets.all(10.0),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(Icons.photo_size_select_actual_rounded),
+                      SizedBox(
+                        width: 10,
+                      ),
+                      FloatingActionButton(
+                        onPressed: () {
+                          pickImage(ImageSource.gallery);
+                          Navigator.of(context).pop();
+                        },
+                        backgroundColor: Colors.blueGrey,
+                        shape: BeveledRectangleBorder(
+                          borderRadius: BorderRadius.all(Radius.circular(3)),
+                        ),
+                        child: Text("Gallery"),
+                      ),
+                    ],
+                  ),
+                  Divider(
+                    height: 20,
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(Icons.camera_alt),
+                      SizedBox(
+                        width: 10,
+                      ),
+                      FloatingActionButton(
+                        
+                        onPressed: () {
+                          pickImage(ImageSource.camera);
+                          Navigator.of(context).pop();
+                        },
+                        backgroundColor: Colors.blueGrey,
+                        shape: BeveledRectangleBorder(
+                          borderRadius: BorderRadius.all(Radius.circular(3)),
+                        ),
+                        child: Text("Camera",),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+            actions: [
               TextButton(
                 onPressed: () {
                   controller.text = ""; //clear textfield xd but works
@@ -170,10 +261,23 @@ class _MainState extends State<Main> {
                       padding: const EdgeInsets.all(20.0),
                       child: Row(
                         children: [
-                          SizedBox(
-                            height: 100,
-                            width: 100,
-                            child: Placeholder(), //photo
+                          GestureDetector(
+                            onTap: () => profilePictureSelectionDialog(),
+                            child: investigatorImage != null
+                                ? Image.file(
+                                    investigatorImage!,
+                                    width: 100,
+                                    height: 100,
+                                    fit: BoxFit.cover,
+                                  )
+                                : SizedBox(
+                                    width: 100,
+                                    height: 100,
+                                    child: Icon(
+                                      Icons.photo_camera_front_outlined,
+                                      size: 100,
+                                    ),
+                                  ),
                           ),
                           SizedBox(
                             width: 20,
@@ -295,7 +399,7 @@ class _MainState extends State<Main> {
                                       int.parse(data.toString());
                                 });
                               } else {
-                                controller.text = "";                            
+                                controller.text = "";
                               }
                             },
                           ),
