@@ -50,8 +50,8 @@ class _EditAbilityDialogState extends State<EditAbilityDialog> {
 
   @override
   void dispose() {
-    super.dispose();
     userLevelController.dispose();
+    super.dispose();
   }
 
   void updateUserLevel(int level, bool updateTextField) { // updateTextField is used to prevent text field listener updating the text field multiple times

@@ -5,6 +5,9 @@ import 'skill_card.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'new_ability_dialog.dart';
 
+// uses package flutter_stagger_grid_view 0.6.2
+// https://pub.dev/packages/flutter_staggered_grid_view
+
 class SkillsView extends StatefulWidget {
   const SkillsView({Key? key}) : super(key: key);
 
@@ -13,9 +16,16 @@ class SkillsView extends StatefulWidget {
 }
 
 class _SkillsViewState extends State<SkillsView> {
-  List<Skill> skillList = [];
-  List<Skill> displayableList = [];
-  int columnCount = 2;
+  List<Skill> skillList = []; // List of all skills
+  List<Skill> displayableList = []; // List of skills available for display, may change when handling search quarries
+  int columnCount = 2; // Number of columns displaying skills
+  TextEditingController searchController = TextEditingController(); // Controller for search TextField
+
+  @override
+  void dispose() {
+    searchController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -30,11 +40,15 @@ class _SkillsViewState extends State<SkillsView> {
           Row(
             children: [
               Expanded(child: TextField(
+                controller: searchController,
                 onChanged: handleQuery,
                 decoration: InputDecoration(
                   prefixIcon: const Icon(Icons.search),
                   suffixIcon: IconButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      searchController.text = "";
+                      handleQuery("");
+                      },
                     icon: const Icon(Icons.clear),
                   ),
                 ),
@@ -47,7 +61,20 @@ class _SkillsViewState extends State<SkillsView> {
                   onSelected: (value) {
                       switch(value) {
                           case "new_ability" :
-                              //showNewAbilityDialog(context);
+                              showNewAbilityDialog(context, skillList).then((value) {
+                                if(value != null) {
+                                  setState(() {
+                                    int index;
+                                    for(index = 0; index < skillList.length; index++) {
+                                      if(skillList[index].name.toLowerCase().compareTo(value.name.toLowerCase()) > 0) {
+                                        break;
+                                      }
+                                    }
+                                    skillList.insert(index, value);
+                                    handleQuery(searchController.text);
+                                  });
+                                }
+                              });
                               break;
                           case "change_column_count":
                               showChangeColumnCountDialog(context, columnCount).then((value) {
