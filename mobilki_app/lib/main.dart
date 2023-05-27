@@ -149,15 +149,15 @@ class _MainState extends State<Main> {
             ),
             actions: [
               TextButton(
-                  onPressed: () => Navigator.of(context).pop(controller.text),
-                  child: Text("Confirm")),
-              TextButton(
                 onPressed: () {
                   controller.text = ""; //clear textfield xd but works
                   Navigator.of(context).pop(null);
                 },
                 child: Text("Cancel"),
               ),
+              TextButton(
+                  onPressed: () => Navigator.of(context).pop(controller.text),
+                  child: Text("Confirm")),
             ],
           ),
         );
@@ -166,57 +166,38 @@ class _MainState extends State<Main> {
           context: context,
           builder: (context) => AlertDialog(
             title: Text("Select investigator's picture"),
-            content: Padding(
-              padding: const EdgeInsets.all(10.0),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Icon(Icons.photo_size_select_actual_rounded),
-                      SizedBox(
-                        width: 10,
-                      ),
-                      FloatingActionButton(
-                        onPressed: () {
-                          pickImage(ImageSource.gallery);
-                          Navigator.of(context).pop();
-                        },
-                        backgroundColor: Colors.blueGrey,
-                        shape: BeveledRectangleBorder(
-                          borderRadius: BorderRadius.all(Radius.circular(3)),
-                        ),
-                        child: Text("Gallery"),
-                      ),
-                    ],
+            content: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                FloatingActionButton(
+                  onPressed: () {
+                    pickImage(ImageSource.gallery);
+                    Navigator.of(context).pop();
+                  },
+                  backgroundColor: Color.fromARGB(255, 134, 88, 46),
+                  shape: BeveledRectangleBorder(
+                    borderRadius: BorderRadius.all(Radius.circular(3)),
                   ),
-                  Divider(
-                    height: 20,
+                  child: Icon(Icons.photo_size_select_actual_rounded),
+                ),
+                Divider(
+                  height: 30,
+                ),
+                SizedBox(
+                  width: 10,
+                ),
+                FloatingActionButton(
+                  onPressed: () {
+                    pickImage(ImageSource.camera);
+                    Navigator.of(context).pop();
+                  },
+                  backgroundColor: Color.fromARGB(255, 134, 88, 46),
+                  shape: BeveledRectangleBorder(
+                    borderRadius: BorderRadius.all(Radius.circular(3)),
                   ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Icon(Icons.camera_alt),
-                      SizedBox(
-                        width: 10,
-                      ),
-                      FloatingActionButton(
-                        
-                        onPressed: () {
-                          pickImage(ImageSource.camera);
-                          Navigator.of(context).pop();
-                        },
-                        backgroundColor: Colors.blueGrey,
-                        shape: BeveledRectangleBorder(
-                          borderRadius: BorderRadius.all(Radius.circular(3)),
-                        ),
-                        child: Text("Camera",),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
+                  child: Icon(Icons.camera_alt),
+                ),
+              ],
             ),
             actions: [
               TextButton(
@@ -247,7 +228,7 @@ class _MainState extends State<Main> {
                       child: Text(
                         'Investigator Data',
                         style: TextStyle(
-                          fontSize: 25,
+                          fontSize: 30,
                         ),
                       ),
                     ),
@@ -366,7 +347,7 @@ class _MainState extends State<Main> {
                       padding: const EdgeInsets.all(8.0),
                       child: Text(
                         "Characteristics",
-                        style: TextStyle(fontSize: 18),
+                        style: TextStyle(fontSize: 20),
                       ),
                     ),
                   ),
@@ -377,18 +358,30 @@ class _MainState extends State<Main> {
                       right: 50,
                       left: 50,
                     ),
-                    child: ListView.builder(
+                    child: GridView.builder(
+                      gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
+                        maxCrossAxisExtent: 200,
+                        childAspectRatio: 5 / 3,
+                        crossAxisSpacing: 25,
+                        mainAxisSpacing: 0,
+                      ),
                       itemCount: characteristic.length,
                       itemBuilder: (context, index) {
                         return Container(
-                          margin: EdgeInsets.only(bottom: 10),
+                          alignment: Alignment.center,
+                          margin: EdgeInsets.only(top: 11, bottom: 11),
                           decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(20),
                               color: Color.fromARGB(255, 235, 162, 28)),
                           child: ListTile(
-                            title: Text(characteristic[index]),
-                            trailing:
-                                Text(characteristicLevel[index].toString()),
+                            title: Text(
+                              characteristic[index],
+                              style: TextStyle(fontSize: 20),
+                            ),
+                            trailing: Text(
+                              characteristicLevel[index].toString(),
+                              style: TextStyle(fontSize: 24),
+                            ),
                             onTap: () async {
                               final data =
                                   await openDialog(characteristic[index]);
@@ -434,9 +427,12 @@ class InvestigatorAboutInfo extends StatelessWidget {
     return Container(
       color: Colors.amber,
       margin: EdgeInsets.only(
-        top: 3,
+        top: 5,
       ),
-      child: Text('$label: $data'),
+      child: Text(
+        '$label: $data',
+        style: TextStyle(fontSize: 18),
+      ),
     );
   }
 }
@@ -448,15 +444,3 @@ void _onVerticalDragStartHandler() {
 void _onHorizontalDragStartHandler() {
   print("bbbbbb");
 }
-
-// class MyApp1 extends StatelessWidget {
-//   @override
-//   Widget build(BuildContext context) {
-//     return MaterialApp(
-//       home: Scaffold(
-//         appBar: AppBar(title: Text("Model Viewer")),
-//         body: Image(),
-//       ),
-//     );
-//   }
-// }
