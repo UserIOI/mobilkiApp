@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:dice_icons/dice_icons.dart';
+import 'package:mobilki_app/notes.dart';
 //import 'package:model_viewer_plus/model_viewer_plus.dart';
 
 void main() =>
@@ -18,8 +19,7 @@ class _MyHomePageState extends State<MyHomePage> {
     const Center(child: Text('Main', style: TextStyle(fontSize: 72))),
     const Center(child: Text('Skills', style: TextStyle(fontSize: 72))),
     const Center(child: Text('Equipment', style: TextStyle(fontSize: 72))),
-    const Center(child: Text('Notes', style: TextStyle(fontSize: 72))),
-    const Center(child: Text('Dices', style: TextStyle(fontSize: 72)))
+    notes(),
   ];
   @override
   Widget build(BuildContext context) => GestureDetector(
