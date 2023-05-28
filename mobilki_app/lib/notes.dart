@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mobilki_app/data/hive_database.dart';
 import 'package:mobilki_app/note.dart';
 import 'package:mobilki_app/newnotedialog.dart';
 
@@ -7,34 +8,58 @@ class notes extends StatefulWidget {
   State<StatefulWidget> createState() => _mainNotes();
 }
 
-var _items = [
-  note('Step 0: Install Flutter',
-      'Install Flutter development tools according to the official documentation.'),
-  note('note 1: Create a project',
-      'Open your terminal, run `flutter create <project_name>` to create a new project.'),
-  note('note 2: Run the app',
-      'Change your terminal directory to the project directory, enter `flutter run`.'),
-];
+final db = HiveDatabase();
+
+List<note> _items = [];
+
+void initializeNotes() {
+  _items = db.loadNotes();
+}
 
 class _mainNotes extends State<notes> {
+  @override
+  void initState() {
+    super.initState();
+    initializeNotes();
+    print(_items.length);
+  }
+
   late List<note> _data;
 
-  void newNoteDialog() {
+  Future<void> newNoteDialog() async {
+    note newNote = note('', '');
+
+    await goToNotePage(newNote);
+
     setState(() {
-      _items.insert(
-          0,
-          note('Idk ale dodaje messege ${_items.length}',
-              'bla bla bla bla bla bla bla'));
+      // print("newNote");
+      // print("${newNote.body}");
+      _items.insert(0, newNote);
+      db.saveNotes(_items);
     });
+  }
+
+  Future<void> goToNotePage(note note) async {
+    await Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) => newnotedialog(
+                  newNote: note,
+                )));
   }
 
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
       child: Column(children: [
+        AppBar(
+          toolbarHeight: 0,
+          backgroundColor: Colors.transparent,
+          elevation: 0,
+        ),
         Container(
           padding: EdgeInsets.all(10),
-          margin: EdgeInsets.only(top: 20),
+          margin: EdgeInsets.only(top: 10),
           child: Align(
             alignment: Alignment.centerRight,
             child: ElevatedButton(
@@ -57,7 +82,7 @@ class _mainNotes extends State<notes> {
 
 Future<List<note>> getSteps() async {
   return Future<List<note>>.delayed(
-      const Duration(milliseconds: 50), () => _items);
+      const Duration(milliseconds: 1), () => _items);
 }
 
 class Steps extends StatelessWidget {
@@ -97,10 +122,29 @@ class _StepListState extends State<StepList> {
   void deleteNote(note note) {
     setState(() {
       _items.remove(note);
+      db.saveNotes(_items);
     });
   }
 
-  void editNote(note note) {}
+  Future<void> editNote(note note) async {
+    _items.remove(note);
+    await goToNotePage(note);
+
+    setState(() {
+      print("object");
+      _items.insert(0, note);
+      db.saveNotes(_items);
+    });
+  }
+
+  Future<void> goToNotePage(note note) async {
+    await Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) => newnotedialog(
+                  newNote: note,
+                )));
+  }
 
   final List<note> _steps;
   _StepListState({required List<note> steps}) : _steps = steps;

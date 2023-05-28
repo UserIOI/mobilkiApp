@@ -1,10 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:dice_icons/dice_icons.dart';
+import 'package:hive/hive.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 import 'package:mobilki_app/notes.dart';
 //import 'package:model_viewer_plus/model_viewer_plus.dart';
 
-void main() =>
-    runApp(MaterialApp(debugShowCheckedModeBanner: false, home: MyHomePage()));
+void main() async {
+  await Hive.initFlutter();
+
+  await Hive.openBox('note_database');
+  runApp(MaterialApp(debugShowCheckedModeBanner: false, home: MyHomePage()));
+}
 
 class MyHomePage extends StatefulWidget {
   @override
