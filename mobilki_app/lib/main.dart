@@ -45,42 +45,45 @@ class _MyHomePageState extends State<MyHomePage> {
               ),
             }
         },
-        child: Scaffold(
-          body: screens[index],
-          bottomNavigationBar: NavigationBarTheme(
-            data: NavigationBarThemeData(
-              indicatorColor: Color.fromARGB(185, 0, 153, 255),
-              labelTextStyle: MaterialStateProperty.all(const TextStyle(
-                  fontSize: 14,
-                  fontWeight: FontWeight.w500,
-                  fontStyle: FontStyle.normal)),
-            ),
-            child: NavigationBar(
-              animationDuration: const Duration(seconds: 1),
-              labelBehavior: NavigationDestinationLabelBehavior.alwaysShow,
-              height: 70,
-              backgroundColor: Color.fromARGB(255, 227, 171, 0),
-              selectedIndex: index,
-              onDestinationSelected: (index) =>
-                  setState(() => this.index = index),
-              destinations: const [
-                NavigationDestination(
-                  icon: Icon(Icons.person, size: 30),
-                  label: 'Main',
-                ),
-                NavigationDestination(
-                  icon: Icon(Icons.settings, size: 30),
-                  label: 'Skills',
-                ),
-                NavigationDestination(
-                  icon: Icon(Icons.backpack_outlined, size: 30),
-                  label: 'Equipment',
-                ),
-                NavigationDestination(
-                  icon: Icon(Icons.note_add_sharp, size: 30),
-                  label: 'Notes',
-                ),
-              ],
+        child: MediaQuery(
+          data: const MediaQueryData(),
+          child: Scaffold(
+            body: screens[index],
+            bottomNavigationBar: NavigationBarTheme(
+              data: NavigationBarThemeData(
+                indicatorColor: Color.fromARGB(185, 0, 153, 255),
+                labelTextStyle: MaterialStateProperty.all(const TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w500,
+                    fontStyle: FontStyle.normal)),
+              ),
+              child: NavigationBar(
+                animationDuration: const Duration(seconds: 1),
+                labelBehavior: NavigationDestinationLabelBehavior.alwaysShow,
+                height: 70,
+                backgroundColor: Color.fromARGB(255, 227, 171, 0),
+                selectedIndex: index,
+                onDestinationSelected: (index) =>
+                    setState(() => this.index = index),
+                destinations: const [
+                  NavigationDestination(
+                    icon: Icon(Icons.person, size: 30),
+                    label: 'Main',
+                  ),
+                  NavigationDestination(
+                    icon: Icon(Icons.settings, size: 30),
+                    label: 'Skills',
+                  ),
+                  NavigationDestination(
+                    icon: Icon(Icons.backpack_outlined, size: 30),
+                    label: 'Equipment',
+                  ),
+                  NavigationDestination(
+                    icon: Icon(Icons.note_add_sharp, size: 30),
+                    label: 'Notes',
+                  ),
+                ],
+              ),
             ),
           ),
         ),

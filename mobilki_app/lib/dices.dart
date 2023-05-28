@@ -1,7 +1,5 @@
-import 'dart:io';
 import 'dart:math';
 
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:mobilki_app/dice.dart';
 
@@ -199,11 +197,14 @@ class _ParentWidgetState extends State<dices> {
           }
       },
       child: Scaffold(
+        appBar: AppBar(
+          toolbarHeight: 0,
+        ),
         body: Container(
           child: Column(
             children: [
               Container(
-                height: MediaQuery.of(context).size.height * 0.68,
+                height: MediaQuery.of(context).size.height * 0.62,
                 width: MediaQuery.of(context).size.width,
                 decoration: BoxDecoration(
                     borderRadius: BorderRadius.all(Radius.circular(15)),
