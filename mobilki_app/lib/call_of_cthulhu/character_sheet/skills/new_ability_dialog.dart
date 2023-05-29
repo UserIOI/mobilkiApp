@@ -185,8 +185,7 @@ class _NewAbilityDialogState extends State<NewAbilityDialog> {
       actions: [
         TextButton(onPressed: () { Navigator.of(context).pop(); }, child: const Text("Cancel")),
         TextButton(onPressed: canBeSaved ? () {
-          Skill skill = Skill(name, baseLevel, true);
-          skill.updateUserLevel(userLevel);
+          Skill skill = Skill(name, baseLevel, userLevel, true);
           Navigator.of(context).pop(skill);
         } : null, child: const Text("Save")),
       ],

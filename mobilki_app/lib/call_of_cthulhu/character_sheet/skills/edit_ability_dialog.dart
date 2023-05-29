@@ -36,7 +36,7 @@ class _EditAbilityDialogState extends State<EditAbilityDialog> {
     if(userLevel <= 0) {
       canBeLower = false;
     }
-    if(widget.skill.baseSuccessChance + userLevel >= 99) {
+    if(widget.skill.baseLevel + userLevel >= 99) {
       canBeHigher = false;
     }
   }
@@ -69,7 +69,7 @@ class _EditAbilityDialogState extends State<EditAbilityDialog> {
       } else if(userLevel < 0) {
         cannotSaveMessage = "User level has to be at least 0";
         canBeSaved = false;
-      } else if(widget.skill.baseSuccessChance + userLevel > 99) {
+      } else if(widget.skill.baseLevel + userLevel > 99) {
         cannotSaveMessage = "Total score cannot exceed 99";
       } else {
         cannotSaveMessage = "";
@@ -77,7 +77,7 @@ class _EditAbilityDialogState extends State<EditAbilityDialog> {
       }
       // updating canBeLower and canBeHigher
       canBeLower = userLevel > 0 ? true : false;
-      canBeHigher = widget.skill.baseSuccessChance + userLevel < 99 ? true : false;
+      canBeHigher = widget.skill.baseLevel + userLevel < 99 ? true : false;
     });
   }
 
@@ -91,7 +91,7 @@ class _EditAbilityDialogState extends State<EditAbilityDialog> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               const Text("Base level:"),
-              Text(" ${widget.skill.baseSuccessChance}"),
+              Text(" ${widget.skill.baseLevel}"),
             ],
           ),
           Row(
@@ -102,8 +102,8 @@ class _EditAbilityDialogState extends State<EditAbilityDialog> {
                 children: [
                   IconButton(
                       onPressed: canBeLower ? () { // setting onPressed to null disables the button
-                        if(widget.skill.baseSuccessChance + userLevel > 99) {
-                          updateUserLevel(99 - widget.skill.baseSuccessChance, true);
+                        if(widget.skill.baseLevel + userLevel > 99) {
+                          updateUserLevel(99 - widget.skill.baseLevel, true);
                         } else {
                           updateUserLevel(userLevel - 1, true);
                         }
@@ -137,7 +137,7 @@ class _EditAbilityDialogState extends State<EditAbilityDialog> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               const Text("Success chance:"),
-              Text("${widget.skill.baseSuccessChance + userLevel}"),
+              Text("${widget.skill.baseLevel + userLevel}"),
             ],
           ),
           Text(cannotSaveMessage),
@@ -146,7 +146,7 @@ class _EditAbilityDialogState extends State<EditAbilityDialog> {
       actions: [
         TextButton(onPressed: () { Navigator.of(context).pop(false); }, child: const Text("Cancel")),
         TextButton(onPressed: canBeSaved ? () {
-          widget.skill.updateUserLevel(userLevel);
+          widget.skill.userLevel = userLevel;
           Navigator.of(context).pop(true);
         } : null, child: const Text("Save")),
       ],
