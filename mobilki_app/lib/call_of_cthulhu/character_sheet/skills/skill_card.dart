@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:mobilki_app/call_of_cthulhu/character_sheet/skills/edit_skill_route_default.dart';
 import 'skill.dart';
-import 'edit_ability_dialog.dart';
 
 class SkillCard extends StatefulWidget {
-  const SkillCard({Key? key, required this.skill, required this.callback}) : super(key: key);
+  const SkillCard({Key? key, required this.skill, required this.saveChangesCallback}) : super(key: key);
 
   final Skill skill;
-  final VoidCallback callback;
+  final VoidCallback saveChangesCallback;
 
   @override
   State<SkillCard> createState() => _SkillCardState();
@@ -17,12 +17,7 @@ class _SkillCardState extends State<SkillCard> {
   Widget build(BuildContext context) {
     return Card(
       child: InkWell(
-        onTap: () => showEditAbilityDialog(context, widget.skill).then((value) {
-          if(value != null && value == true) {
-            setState(() {});
-            widget.callback();
-          }
-        }),
+        onTap: openEditSkillRoute,
         child: ListTile(
           leading: widget.skill.isUserCreated ? const Icon(Icons.person) : null,
           title: Text(
@@ -42,5 +37,20 @@ class _SkillCardState extends State<SkillCard> {
         ),
       ),
     );
+  }
+
+  void openEditSkillRoute() async {
+    if(widget.skill.isUserCreated) {
+      // TODO edit user skill
+    } else {
+      bool? result = await Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => EditSkillRouteDefault(skill: widget.skill)),
+      );
+      if(result != null && result == true) {
+        setState(() {});
+        widget.saveChangesCallback();
+      }
+    }
   }
 }

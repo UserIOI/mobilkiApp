@@ -69,20 +69,20 @@ class _SkillsViewState extends State<SkillsView> {
                     const PopupMenuItem(value: "change_column_count", child: Text("Change column count")),
                   ],
                   onSelected: (value) {
-                      switch(value) {
-                          case "new_ability" :
-                              openNewSkillRoute();
-                              break;
-                          case "change_column_count":
-                              showChangeColumnCountDialog(context, columnCount).then((value) {
-                                if(value != null) {
-                                  setState(() {
-                                    columnCount = value;
-                                  });
-                                }
-                              });
-                              break;
-                      }
+                    switch(value) {
+                      case "new_ability" :
+                      openNewSkillRoute();
+                      break;
+                    case "change_column_count":
+                      showChangeColumnCountDialog(context, columnCount).then((value) {
+                        if(value != null) {
+                          setState(() {
+                            columnCount = value;
+                          });
+                        }
+                      });
+                      break;
+                    }
                   },
               ),
             ],
@@ -93,9 +93,11 @@ class _SkillsViewState extends State<SkillsView> {
               crossAxisCount: columnCount,
               itemBuilder: (context, index) {
                 final skill = displayableList[index];
-                return SkillCard(skill: skill, callback: () { saveChanges(); });
+                return SkillCard(
+                    skill: skill,
+                    saveChangesCallback: () { saveChanges(); });
               }),
-            ),
+          ),
         ],
       ),
     );

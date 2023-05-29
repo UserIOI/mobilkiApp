@@ -2,24 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'skill.dart';
 
-Future<bool?> showEditAbilityDialog(BuildContext context, Skill skill) {
-  return showDialog<bool>(
-    context: context,
-    builder: (context) => EditAbilityDialog(
-      skill: skill,
-    ),
-  );
-}
-
-class EditAbilityDialog extends StatefulWidget {
+class EditSkillRouteDefault extends StatefulWidget {
   final Skill skill; // Skill object that the user wants to edit, required
-  const EditAbilityDialog({Key? key, required this.skill}) : super(key: key);
+  const EditSkillRouteDefault({Key? key, required this.skill}) : super(key: key);
 
   @override
-  State<EditAbilityDialog> createState() => _EditAbilityDialogState();
+  State<EditSkillRouteDefault> createState() => _EditSkillRouteDefaultState();
 }
 
-class _EditAbilityDialogState extends State<EditAbilityDialog> {
+class _EditSkillRouteDefaultState extends State<EditSkillRouteDefault> {
   int userLevel = 0; // Local user level displayed by the dialog, this value is saved into skill object if "Save" button is clicked
   bool canBeSaved = false; // Controls if the "Save" button is active
   bool canBeLower = true; // Controls if decrement button is active, it's true if userLevel is greater than 0
@@ -33,17 +24,19 @@ class _EditAbilityDialogState extends State<EditAbilityDialog> {
     userLevel = widget.skill.userLevel;
     userLevelController = TextEditingController(text: "$userLevel");
     userLevelController.addListener(textEditingListener);
-    if(userLevel <= 0) {
+    if (userLevel <= 0) {
       canBeLower = false;
     }
-    if(widget.skill.baseLevel + userLevel >= 99) {
+    if (widget.skill.baseLevel + userLevel >= 99) {
       canBeHigher = false;
     }
   }
 
   void textEditingListener() {
-    int level = userLevelController.text.isEmpty ? 0 : int.parse(userLevelController.text); // Empty field is treated as level 0
-    if(level != userLevel) { // updateUserLevel is only called if the new value is different to the old one
+    int level = userLevelController.text.isEmpty ? 0 : int.parse(
+        userLevelController.text); // Empty field is treated as level 0
+    if (level !=
+        userLevel) { // updateUserLevel is only called if the new value is different to the old one
       updateUserLevel(level, false);
     }
   }
@@ -54,22 +47,23 @@ class _EditAbilityDialogState extends State<EditAbilityDialog> {
     super.dispose();
   }
 
-  void updateUserLevel(int level, bool updateTextField) { // updateTextField is used to prevent text field listener updating the text field multiple times
+  void updateUserLevel(int level, bool updateTextField) {
+    // updateTextField is used to prevent text field listener updating the text field multiple times
     setState(() {
       userLevel = level;
-      if(updateTextField) { // Listener is temporarily removed to not trigger more updates
+      if (updateTextField) { // Listener is temporarily removed to not trigger more updates
         userLevelController.removeListener(textEditingListener);
         userLevelController.text = "$userLevel";
         userLevelController.addListener(textEditingListener);
       }
       // updating canBeSaved and cannotSaveMessage
-      if(widget.skill.userLevel == userLevel) {
+      if (widget.skill.userLevel == userLevel) {
         cannotSaveMessage = "No changes have been done";
         canBeSaved = false;
-      } else if(userLevel < 0) {
+      } else if (userLevel < 0) {
         cannotSaveMessage = "User level has to be at least 0";
         canBeSaved = false;
-      } else if(widget.skill.baseLevel + userLevel > 99) {
+      } else if (widget.skill.baseLevel + userLevel > 99) {
         cannotSaveMessage = "Total score cannot exceed 99";
       } else {
         cannotSaveMessage = "";
@@ -83,10 +77,13 @@ class _EditAbilityDialogState extends State<EditAbilityDialog> {
 
   @override
   Widget build(BuildContext context) {
-    return AlertDialog(
-      title: Text(widget.skill.name),
-      content:Column(
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text("Edit skill"),
+      ),
+      body: Column(
         children: [
+          Text(widget.skill.name),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -101,13 +98,15 @@ class _EditAbilityDialogState extends State<EditAbilityDialog> {
               Row(
                 children: [
                   IconButton(
-                      onPressed: canBeLower ? () { // setting onPressed to null disables the button
-                        if(widget.skill.baseLevel + userLevel > 99) {
+                      onPressed: canBeLower
+                          ? () { // setting onPressed to null disables the button
+                        if (widget.skill.baseLevel + userLevel > 99) {
                           updateUserLevel(99 - widget.skill.baseLevel, true);
                         } else {
                           updateUserLevel(userLevel - 1, true);
                         }
-                      } : null,
+                      }
+                          : null,
                       icon: const Icon(Icons.chevron_left)),
                   SizedBox(
                     width: 40,
@@ -122,7 +121,7 @@ class _EditAbilityDialogState extends State<EditAbilityDialog> {
                   ),
                   IconButton(
                       onPressed: canBeHigher ? () {
-                        if(userLevel < 0) {
+                        if (userLevel < 0) {
                           updateUserLevel(0, true);
                         } else {
                           updateUserLevel(userLevel + 1, true);
@@ -141,15 +140,19 @@ class _EditAbilityDialogState extends State<EditAbilityDialog> {
             ],
           ),
           Text(cannotSaveMessage),
+          Row(
+            children: [
+              TextButton(onPressed: () {
+                Navigator.pop(context, false);
+                }, child: const Text("Cancel")),
+              TextButton(onPressed: canBeSaved ? () {
+                widget.skill.userLevel = userLevel;
+                Navigator.pop(context, true);
+              } : null, child: const Text("Save")),
+            ],
+          ),
         ],
       ),
-      actions: [
-        TextButton(onPressed: () { Navigator.of(context).pop(false); }, child: const Text("Cancel")),
-        TextButton(onPressed: canBeSaved ? () {
-          widget.skill.userLevel = userLevel;
-          Navigator.of(context).pop(true);
-        } : null, child: const Text("Save")),
-      ],
     );
   }
 }
