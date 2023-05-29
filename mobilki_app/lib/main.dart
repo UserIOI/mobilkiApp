@@ -32,7 +32,7 @@ class _MyHomePageState extends State<MyHomePage> {
     //Main()
     //Skills()
     const Center(child: Text('Main', style: TextStyle(fontSize: 72))),
-    const SkillsView(),
+    SkillsView(playerName: playerName),
     const Center(child: Text('Equipment', style: TextStyle(fontSize: 72))),
     notes(playerName),
   ];

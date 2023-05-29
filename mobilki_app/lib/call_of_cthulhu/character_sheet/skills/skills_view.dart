@@ -1,15 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:mobilki_app/call_of_cthulhu/character_sheet/skills/change_column_count_dialog.dart';
+import 'package:mobilki_app/main.dart';
 import 'skill.dart';
 import 'skill_card.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'new_ability_dialog.dart';
+import 'package:mobilki_app/database/boxes.dart';
+import 'package:mobilki_app/database/player.dart';
 
 // uses package flutter_stagger_grid_view 0.6.2
 // https://pub.dev/packages/flutter_staggered_grid_view
 
 class SkillsView extends StatefulWidget {
-  const SkillsView({Key? key}) : super(key: key);
+  final String playerName;
+  const SkillsView({Key? key, required this.playerName}) : super(key: key);
 
   @override
   State<SkillsView> createState() => _SkillsViewState();
@@ -19,20 +23,27 @@ class _SkillsViewState extends State<SkillsView> {
   List<Skill> skillList = []; // List of all skills
   List<Skill> displayableList = []; // List of skills available for display, may change when handling search quarries
   int columnCount = 2; // Number of columns displaying skills
-  TextEditingController searchController = TextEditingController(); // Controller for search TextField
+  TextEditingController searchBarController = TextEditingController(); // Controller for search TextField
+
+  @override
+  void initState() {
+    searchBarController.addListener(() { // initializing search bar listener
+      refreshDisplayableList();
+    });
+    skillList = getSkillsFromPlayer(); // loading skills from box
+    refreshDisplayableList(); // showing skills
+
+    super.initState();
+  }
 
   @override
   void dispose() {
-    searchController.dispose();
+    searchBarController.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    if(skillList.isEmpty) {
-      skillList = getDefaultSkills();
-      displayableList = skillList;
-    }
 
     return SafeArea(
       child: Column(
@@ -40,14 +51,13 @@ class _SkillsViewState extends State<SkillsView> {
           Row(
             children: [
               Expanded(child: TextField(
-                controller: searchController,
-                onChanged: handleQuery,
+                controller: searchBarController,
                 decoration: InputDecoration(
                   prefixIcon: const Icon(Icons.search),
                   suffixIcon: IconButton(
                     onPressed: () {
-                      searchController.text = "";
-                      handleQuery("");
+                      searchBarController.text = "";
+                      refreshDisplayableList();
                       },
                     icon: const Icon(Icons.clear),
                   ),
@@ -71,7 +81,8 @@ class _SkillsViewState extends State<SkillsView> {
                                       }
                                     }
                                     skillList.insert(index, value);
-                                    handleQuery(searchController.text);
+                                    refreshDisplayableList();
+                                    saveChanges();
                                   });
                                 }
                               });
@@ -96,7 +107,7 @@ class _SkillsViewState extends State<SkillsView> {
               crossAxisCount: columnCount,
               itemBuilder: (context, index) {
                 final skill = displayableList[index];
-                return SkillCard(skill);
+                return SkillCard(skill: skill, callback: () { saveChanges(); });
               }),
             ),
         ],
@@ -104,97 +115,31 @@ class _SkillsViewState extends State<SkillsView> {
     );
   }
 
-  // currently not used
-  // kept just in case I wanted to change staggeredGrid back to listView
-  List<Widget> generateSkillCards(int columnCount) {
-    List<List<Skill>> dividedList = [];
-    double length = displayableList.length / columnCount;
-    for(int i = 0; i < length.ceil() ; i++) {
-        dividedList.add([]);
+  List<Skill> getSkillsFromPlayer() {
+    if(!boxPlayers.containsKey(playerName)) {
+      return [];
     }
-    for(int i = 0; i < displayableList.length; i++) {
-        dividedList[i ~/ columnCount].add(displayableList[i]);
+    Player player = boxPlayers.get(playerName);
+    return player.skillList.map((skill) => Skill.fromString(skill)).toList();
+  }
+
+  void saveChanges() {
+    if(boxPlayers.containsKey(playerName)) {
+      Player player = boxPlayers.get(playerName);
+      player.skillList = skillList.map((skill) => skill.toString()).toList();
+      boxPlayers.put(playerName, player);
     }
-    List<Widget> result = [];
-    for(int i = 0; i < dividedList.length; i++) {
-        List<Widget> childrenList = [];
-        childrenList = dividedList[i].map((skill) => Expanded(child: SkillCard(skill))).toList();
-        result.add(Row(
-          children: childrenList,
-        ));
-    }
-    return result;
   }
 
-  List<Skill> getDefaultSkills() {
-    List<Skill> skillList = [
-      Skill("Accounting", 5, 0, false),
-          Skill("Anthropology", 1, 0, false),
-          Skill("Appraise", 5, 0, false),
-          Skill("Archaeology", 1, 0, false),
-          Skill("Art/Craft", 5, 0, false),
-          Skill("Charm", 15, 0, false),
-          Skill("Climb", 40, 0, false),
-          Skill("Credit Rating", 0, 0, false),
-          Skill("Cthulhu Mythos", 0, 0, false),
-          Skill("Disguise", 5, 0, false),
-          Skill("Dodge", (getDEX() ~/ 2), 0, false),
-          Skill("Drive Auto", 20, 0, false),
-          Skill("Electrical Repair", 10, 0, false),
-          Skill("Fast Talk", 5, 0, false),
-          Skill("Fighting (Brawl)", 25, 0, false),
-          Skill("Fighting (Firearms)", 25, 0, false),
-          Skill("First Aid", 30, 0, false),
-          Skill("History", 5, 0, false),
-          Skill("Intimidate", 15, 0, false),
-          Skill("Jump", 25, 0, false),
-          Skill("Language (Other)", 1, 0, false),
-          Skill("Language (Own)", getEDU() * 5, 0, false),
-          Skill("Law", 5, 0, false),
-          Skill("Library Use", 20, 0, false),
-          Skill("Listen", 20, 0, false),
-          Skill("Locksmith", 1, 0, false),
-          Skill("Mechanical Repair", 10, 0, false),
-          Skill("Medicine", 1, 0, false),
-          Skill("Natural History", 10, 0, false),
-          Skill("Navigate", 10, 0, false),
-          Skill("Occult", 5, 0, false),
-          Skill("Operate Heavy Machinery", 1, 0, false),
-          Skill("Persuade", 10, 0, false),
-          Skill("Pilot", 1, 0, false),
-          Skill("Psychology", 5, 0, false),
-          Skill("Psychoanalysis", 1, 0, false),
-          Skill("Ride", 5, 0, false),
-          Skill("Science", 1, 0, false),
-          Skill("Sleight of Hand", 10, 0, false),
-          Skill("Spot Hidden", 25, 0, false),
-          Skill("Stealth", 20, 0, false),
-          Skill("Survival", 10, 0, false),
-          Skill("Swim", 25, 0, false),
-          Skill("Throw", 25, 0, false),
-          Skill("Track", 10, 0, false),
-    ];
-    return skillList;
-  }
-
-  int getDEX() {
-    // TODO: get DEX
-    return 10;
-  }
-
-  int getEDU() {
-    // TODO: get EDU
-    return 10;
-  }
-
-  void handleQuery(String query) {
+  void refreshDisplayableList() { // refreshed displayableList taking into account current query in search bar
     setState(() {
+      String query = searchBarController.text;
       if(query == "") {
         displayableList = skillList;
       } else {
         displayableList = [];
         for (var skill in skillList) {
-          if (skill.name.toLowerCase().startsWith(query.toLowerCase())) {
+          if (skill.name.toLowerCase().contains(query.toLowerCase())) {
             displayableList.add(skill);
           }
         }

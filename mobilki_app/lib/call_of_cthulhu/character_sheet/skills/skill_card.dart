@@ -3,9 +3,10 @@ import 'skill.dart';
 import 'edit_ability_dialog.dart';
 
 class SkillCard extends StatefulWidget {
-  const SkillCard(this.skill, {Key? key}) : super(key: key);
+  const SkillCard({Key? key, required this.skill, required this.callback}) : super(key: key);
 
   final Skill skill;
+  final VoidCallback callback;
 
   @override
   State<SkillCard> createState() => _SkillCardState();
@@ -19,6 +20,7 @@ class _SkillCardState extends State<SkillCard> {
         onTap: () => showEditAbilityDialog(context, widget.skill).then((value) {
           if(value != null && value == true) {
             setState(() {});
+            widget.callback();
           }
         }),
         child: ListTile(
