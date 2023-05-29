@@ -3,12 +3,20 @@ import 'package:dice_icons/dice_icons.dart';
 import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:mobilki_app/notes.dart';
+
+import 'database/boxes.dart';
+import 'database/player.dart';
 //import 'package:model_viewer_plus/model_viewer_plus.dart';
 
+//* Tutaj przy wyborze postaci bedzie trzeba update zrobic na nazwie aby ja wrzucic do notes i aby wziac danego gracza notatki*/
+final String playerName = 'Abrakadabra';
 void main() async {
   await Hive.initFlutter();
 
-  await Hive.openBox('note_database');
+  Hive.registerAdapter(PlayerAdapter());
+  print("aa");
+  boxPlayers = await Hive.openBox<Player>('play');
+  print("bb");
   runApp(MaterialApp(debugShowCheckedModeBanner: false, home: MyHomePage()));
 }
 
@@ -25,7 +33,7 @@ class _MyHomePageState extends State<MyHomePage> {
     const Center(child: Text('Main', style: TextStyle(fontSize: 72))),
     const Center(child: Text('Skills', style: TextStyle(fontSize: 72))),
     const Center(child: Text('Equipment', style: TextStyle(fontSize: 72))),
-    notes(),
+    notes(playerName),
   ];
   @override
   Widget build(BuildContext context) => GestureDetector(

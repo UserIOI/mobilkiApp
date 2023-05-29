@@ -1,27 +1,88 @@
 import 'package:flutter/material.dart';
 import 'package:mobilki_app/data/hive_database.dart';
+import 'package:mobilki_app/database/boxes.dart';
 import 'package:mobilki_app/note.dart';
 import 'package:mobilki_app/newnotedialog.dart';
 
+import 'database/player.dart';
+
+late String playerName;
+
 class notes extends StatefulWidget {
+  String playerN;
+  notes(this.playerN) {
+    playerName = playerN;
+  }
   @override
   State<StatefulWidget> createState() => _mainNotes();
 }
 
-final db = HiveDatabase();
+//* Player from database */
+late Player playerDB;
+late int indexOfPlayer;
 
 List<note> _items = [];
 
-void initializeNotes() {
-  _items = db.loadNotes();
+//* loading notes from db as lists and putting them as note object*/
+List<note> loadNotes(Player player) {
+  List<note> saveNotesFormatted = [];
+
+  if (player.noteListTitle.isNotEmpty && player.noteListContent.isNotEmpty) {
+    for (int i = 0; i < player.noteListTitle.length; i++) {
+      note individualNote =
+          note(player.noteListTitle[i], player.noteListContent[i]);
+      saveNotesFormatted.add(individualNote);
+    }
+  }
+
+  return saveNotesFormatted;
+}
+
+//* converting notes objects to List of strings for inputting to db (titles)*/
+List<String> titleToList(List<note> items) {
+  List<String> list = [];
+  for (int i = 0; i < items.length; i++) {
+    list.add(items[i].title);
+  }
+  return list;
+}
+
+//* converting notes objects to List of strings for inputting to db (content)*/
+List<String> contentToList(List<note> items) {
+  List<String> list = [];
+  for (int i = 0; i < items.length; i++) {
+    list.add(items[i].body);
+  }
+  return list;
+}
+
+void initializeNotes(String playerName) {
+  if (boxPlayers.length != 0) {
+    print(boxPlayers.length);
+    for (int i = 0; i < boxPlayers.length; i++) {
+      if (playerName == boxPlayers.keyAt(i)) {
+        playerDB = boxPlayers.getAt(i);
+        indexOfPlayer = i;
+        _items = loadNotes(playerDB);
+        print("player existing : ${playerDB.name}");
+        print(_items.length);
+        print(indexOfPlayer);
+        return;
+      }
+    }
+  }
+  playerDB = Player();
+  print("platyer aint existing : $playerName");
+  playerDB.name = playerName;
+  indexOfPlayer = boxPlayers.length + 1;
+  boxPlayers.put(playerName, playerDB);
 }
 
 class _mainNotes extends State<notes> {
   @override
   void initState() {
     super.initState();
-    initializeNotes();
-    print(_items.length);
+    initializeNotes(playerName);
   }
 
   late List<note> _data;
@@ -35,7 +96,13 @@ class _mainNotes extends State<notes> {
       // print("newNote");
       // print("${newNote.body}");
       _items.insert(0, newNote);
-      db.saveNotes(_items);
+      // playerDB.noteList.clear;
+      playerDB.noteListTitle = titleToList(_items);
+      playerDB.noteListContent = contentToList(_items);
+      boxPlayers.putAt(indexOfPlayer, playerDB);
+      print("saved");
+      print(playerDB.noteListContent.length);
+      print(indexOfPlayer);
     });
   }
 
@@ -122,7 +189,12 @@ class _StepListState extends State<StepList> {
   void deleteNote(note note) {
     setState(() {
       _items.remove(note);
-      db.saveNotes(_items);
+      // playerDB.noteList.clear;
+      playerDB.noteListTitle = titleToList(_items);
+      playerDB.noteListContent = contentToList(_items);
+      boxPlayers.putAt(indexOfPlayer, playerDB);
+      print(playerDB.noteListContent.length);
+      print(indexOfPlayer);
     });
   }
 
@@ -133,7 +205,12 @@ class _StepListState extends State<StepList> {
     setState(() {
       print("object");
       _items.insert(0, note);
-      db.saveNotes(_items);
+      // playerDB.noteList.clear;
+      playerDB.noteListTitle = titleToList(_items);
+      playerDB.noteListContent = contentToList(_items);
+      boxPlayers.putAt(indexOfPlayer, playerDB);
+      print(playerDB.noteListContent.length);
+      print(indexOfPlayer);
     });
   }
 

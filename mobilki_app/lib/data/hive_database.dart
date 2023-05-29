@@ -4,8 +4,9 @@ import 'package:hive_flutter/hive_flutter.dart';
 import '../note.dart';
 
 class HiveDatabase {
-  final _myBox = Hive.box('note_database');
-
+  int index;
+  HiveDatabase(this.index);
+  final _myBox = Hive.box('player1');
   List<note> loadNotes() {
     List<note> saveNotesFormatted = [];
 
