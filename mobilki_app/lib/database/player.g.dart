@@ -18,7 +18,7 @@ class PlayerAdapter extends TypeAdapter<Player> {
     };
     return Player()
       ..name = fields[0] as String
-      ..skillList = (fields[1] as List).cast<Skills>()
+      ..skillList = (fields[1] as List).cast<Skill>()
       ..noteListTitle = (fields[2] as List).cast<String>()
       ..noteListContent = (fields[3] as List).cast<String>();
   }

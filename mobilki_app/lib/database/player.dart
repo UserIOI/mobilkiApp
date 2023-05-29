@@ -1,5 +1,5 @@
 import 'package:hive/hive.dart';
-import 'package:mobilki_app/call_of_cthulhu/character_sheet/skills/skills.dart';
+import 'package:mobilki_app/call_of_cthulhu/character_sheet/skills/skill.dart';
 
 import '../note.dart';
 
@@ -11,7 +11,7 @@ class Player {
   String name = "";
 
   @HiveField(1)
-  List<Skills> skillList = [];
+  List<Skill> skillList = [];
 
   @HiveField(2)
   List<String> noteListTitle = [];
