@@ -2,25 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'skill.dart';
 
-Future<Skill?> showNewAbilityDialog(BuildContext context, List<Skill> skillList) {
-  List<String> nameList = skillList.map((skill) => skill.name).toList();
-  return showDialog<Skill>(
-    context: context,
-    builder: (context) => NewAbilityDialog(
-      nameList: nameList,
-    )
-  );
-}
-
-class NewAbilityDialog extends StatefulWidget {
+class NewSkillRoute extends StatefulWidget {
   final List<String> nameList;
-  const NewAbilityDialog({Key? key, required this.nameList}) : super(key: key);
+  const NewSkillRoute({Key? key, required this.nameList}) : super(key: key);
 
   @override
-  State<NewAbilityDialog> createState() => _NewAbilityDialogState();
+  State<NewSkillRoute> createState() => _NewSkillRouteState();
 }
 
-class _NewAbilityDialogState extends State<NewAbilityDialog> {
+class _NewSkillRouteState extends State<NewSkillRoute> {
   int baseLevel = 0;
   int userLevel = 0;
   String name = "";
@@ -32,6 +22,8 @@ class _NewAbilityDialogState extends State<NewAbilityDialog> {
   void update() {
     setState(() {
       if(name.trim() == "") { // is name not empty?
+        canBeSaved = false;
+      } else if (name.contains(";")) { // does name NOT contain ";" ? (it is used to save skill to string format)
         canBeSaved = false;
       } else if (widget.nameList.contains(name)) { // is name unique?
         canBeSaved = false;
@@ -90,12 +82,13 @@ class _NewAbilityDialogState extends State<NewAbilityDialog> {
     super.dispose();
   }
 
-
   @override
   Widget build(BuildContext context) {
-    return AlertDialog(
-      title:  const Text("New ability"),
-      content: SingleChildScrollView(
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text("Create a new skill"),
+      ),
+      body: SingleChildScrollView(
         child: Column(
           children: [
             Row(
@@ -172,23 +165,23 @@ class _NewAbilityDialogState extends State<NewAbilityDialog> {
               children: [
                 const Text("Success chance is:"),
                 Text(
-                    "${baseLevel + userLevel}",
+                  "${baseLevel + userLevel}",
                   style: TextStyle(
                     color: baseLevel + userLevel <= 99 ? Colors.black : Colors.red,
                   ),
                 ),
               ],
             ),
+            ElevatedButton(
+              onPressed: canBeSaved ? () {
+                Skill skill = Skill(name, baseLevel, userLevel, true);
+                Navigator.pop(context, skill);
+              } : null,
+              child: const Text("Save"),
+            ),
           ],
         ),
       ),
-      actions: [
-        TextButton(onPressed: () { Navigator.of(context).pop(); }, child: const Text("Cancel")),
-        TextButton(onPressed: canBeSaved ? () {
-          Skill skill = Skill(name, baseLevel, userLevel, true);
-          Navigator.of(context).pop(skill);
-        } : null, child: const Text("Save")),
-      ],
     );
   }
 }

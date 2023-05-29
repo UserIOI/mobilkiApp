@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:mobilki_app/call_of_cthulhu/character_sheet/skills/change_column_count_dialog.dart';
+import 'package:mobilki_app/call_of_cthulhu/character_sheet/skills/new_skill_route.dart';
 import 'package:mobilki_app/main.dart';
 import 'skill.dart';
 import 'skill_card.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
-import 'new_ability_dialog.dart';
 import 'package:mobilki_app/database/boxes.dart';
 import 'package:mobilki_app/database/player.dart';
 
@@ -71,21 +71,7 @@ class _SkillsViewState extends State<SkillsView> {
                   onSelected: (value) {
                       switch(value) {
                           case "new_ability" :
-                              showNewAbilityDialog(context, skillList).then((value) {
-                                if(value != null) {
-                                  setState(() {
-                                    int index;
-                                    for(index = 0; index < skillList.length; index++) {
-                                      if(skillList[index].name.toLowerCase().compareTo(value.name.toLowerCase()) > 0) {
-                                        break;
-                                      }
-                                    }
-                                    skillList.insert(index, value);
-                                    refreshDisplayableList();
-                                    saveChanges();
-                                  });
-                                }
-                              });
+                              openNewSkillRoute();
                               break;
                           case "change_column_count":
                               showChangeColumnCountDialog(context, columnCount).then((value) {
@@ -145,5 +131,27 @@ class _SkillsViewState extends State<SkillsView> {
         }
       }
     });
+  }
+
+  void openNewSkillRoute() async {
+    List<String> nameList = skillList.map((skill) => skill.name).toList();
+    Skill? skill = await Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => NewSkillRoute(nameList: nameList)),
+    );
+
+    if(skill != null) {
+      setState(() {
+        int index;
+        for(index = 0; index < skillList.length; index++) {
+          if(skillList[index].name.toLowerCase().compareTo(skill.name.toLowerCase()) > 0) {
+            break;
+          }
+        }
+        skillList.insert(index, skill);
+        refreshDisplayableList();
+        saveChanges();
+      });
+    }
   }
 }
