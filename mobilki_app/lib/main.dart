@@ -7,6 +7,7 @@ import 'package:mobilki_app/notes.dart';
 import 'database/boxes.dart';
 import 'database/player.dart';
 //import 'package:model_viewer_plus/model_viewer_plus.dart';
+import 'package:mobilki_app/call_of_cthulhu/character_sheet/skills/skills_view.dart';
 
 //* Tutaj przy wyborze postaci bedzie trzeba update zrobic na nazwie aby ja wrzucic do notes i aby wziac danego gracza notatki*/
 final String playerName = 'Abrakadabra';
@@ -31,7 +32,7 @@ class _MyHomePageState extends State<MyHomePage> {
     //Main()
     //Skills()
     const Center(child: Text('Main', style: TextStyle(fontSize: 72))),
-    const Center(child: Text('Skills', style: TextStyle(fontSize: 72))),
+    const SkillsView(),
     const Center(child: Text('Equipment', style: TextStyle(fontSize: 72))),
     notes(playerName),
   ];
