@@ -30,7 +30,7 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   int index = 0;
   final screens = [
-    const Main(),
+    Main(playerName),
     const Center(child: Text('Main', style: TextStyle(fontSize: 72))),
     const SkillsView(),
     const Center(child: Text('Skills', style: TextStyle(fontSize: 72))),

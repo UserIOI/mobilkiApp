@@ -2,50 +2,118 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:mobilki_app/database/boxes.dart';
+import 'package:mobilki_app/database/player.dart';
 
+late String playerName;
 
 class Main extends StatefulWidget {
-  const Main({
-    super.key,
-  });
+  String playerNAME;
+  Main(this.playerNAME) {
+    playerName = playerNAME;
+  }
 
   @override
   State<Main> createState() => _MainState();
 }
 
+late Player player;
+
+String? investigatorImagePath;
+
+late Map<String, String?> investigatorAboutData;
+
+List<String> characteristic = [
+  "STR",
+  "CON",
+  "DEX",
+  "INT",
+  "SIZ",
+  "POW",
+  "APP",
+  "EDU",
+];
+
+late List<int> characteristicLevel;
+
+//* if player exists - loads all data of player,
+//* otherwise creates new player and assigns default values
+void loadPlayerData(String playerName) {
+  if (boxPlayers.isEmpty) {
+    print("box's empty :(");
+    return;
+  }
+
+  print("BoxPlayer length : ${boxPlayers.length}");
+
+  if (hasPlayer(playerName)) {
+    player = boxPlayers.get(playerName);
+    investigatorImagePath = player.investigatorImagePath;
+    investigatorAboutData = player.investigatorAboutData;
+    characteristicLevel = player.characteristicLevel;
+    print("Player ${player.name} loaded");
+    return;
+  }
+
+  print("No player data present");
+  player = Player();
+  player.name = playerName;
+  boxPlayers.put(playerName, player);
+  print("Player $playerName has been created");
+  investigatorImagePath = player.investigatorImagePath;
+  investigatorAboutData = player.investigatorAboutData;
+  characteristicLevel = player.characteristicLevel;
+}
+
+//* saves investigatorAboutData to DB
+void saveInvestigatorAboutData() {
+  if (!hasPlayer(playerName)) {
+    return;
+  }
+  player = boxPlayers.get(playerName);
+  player.investigatorAboutData = investigatorAboutData;
+  boxPlayers.put(playerName, player);
+  print("Saved investigatorAboutData to DB - player: $playerName");
+}
+
+//* saves characteristic level to DB
+void saveCharacteristicLevel() {
+  if (!hasPlayer(playerName)) {
+    return;
+  }
+  player = boxPlayers.get(playerName);
+  player.characteristicLevel = characteristicLevel;
+  boxPlayers.put(playerName, player);
+  print("Saved characteristicLevel to DB - player: $playerName");
+}
+
+//* saves investigator's image path do DB
+void saveInvestigatorImagePath() {
+  if (!hasPlayer(playerName)) {
+    return;
+  }
+  player = boxPlayers.get(playerName);
+  player.investigatorImagePath = investigatorImagePath;
+  boxPlayers.put(playerName, player);
+  print("Saved picture path do DB - player: $playerName");
+}
+
+bool hasPlayer(String playerName) {
+  if (!boxPlayers.containsKey(playerName)) {
+    print("Unable to retrive player: $playerName");
+    return false;
+  }
+  return true;
+}
+
 class _MainState extends State<Main> {
-  File? investigatorImage;
+  @override
+  void initState() {
+    super.initState();
+    loadPlayerData(playerName);
+  }
 
-  Map<String, String?> investigatorAboutData = {
-    "Name": "",
-    "Occupation": "",
-    "Age": "",
-    "Residence": "",
-    "PlaceOfBirth": "",
-  };
-
-  List<String> characteristic = [
-    "STR",
-    "CON",
-    "DEX",
-    "INT",
-    "SIZ",
-    "POW",
-    "APP",
-    "EDU",
-  ];
-
-  List<int> characteristicLevel = [
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-  ];
-
+  //* sets path for investigator's image
   Future pickImage(ImageSource imageSource) async {
     try {
       final image = await ImagePicker().pickImage(source: imageSource);
@@ -54,11 +122,7 @@ class _MainState extends State<Main> {
         return;
       }
 
-      final imageTemp = File(image.path);
-
-      setState(() {
-        investigatorImage = imageTemp;
-      });
+      investigatorImagePath = image.path;
     } on PlatformException catch (e) {
       print("Can not pick image: $e");
     }
@@ -100,8 +164,8 @@ class _MainState extends State<Main> {
               mainAxisSize: MainAxisSize.min,
               children: [
                 FloatingActionButton(
-                  onPressed: () {
-                    pickImage(ImageSource.gallery);
+                  onPressed: () async {
+                    await pickImage(ImageSource.gallery);
                     Navigator.of(context).pop();
                   },
                   backgroundColor: Color.fromARGB(255, 134, 88, 46),
@@ -117,8 +181,8 @@ class _MainState extends State<Main> {
                   width: 10,
                 ),
                 FloatingActionButton(
-                  onPressed: () {
-                    pickImage(ImageSource.camera);
+                  onPressed: () async {
+                    await pickImage(ImageSource.camera);
                     Navigator.of(context).pop();
                   },
                   backgroundColor: Color.fromARGB(255, 134, 88, 46),
@@ -173,10 +237,17 @@ class _MainState extends State<Main> {
                       child: Row(
                         children: [
                           GestureDetector(
-                            onTap: () => profilePictureSelectionDialog(),
-                            child: investigatorImage != null
+                            onTap: () async {
+                              await profilePictureSelectionDialog();
+                              setState(() {
+                                if (investigatorImagePath != null) {
+                                  saveInvestigatorImagePath();
+                                }
+                              });
+                            },
+                            child: player.investigatorImagePath != null
                                 ? Image.file(
-                                    investigatorImage!,
+                                    File(player.investigatorImagePath!),
                                     width: 100,
                                     height: 100,
                                     fit: BoxFit.cover,
@@ -203,8 +274,10 @@ class _MainState extends State<Main> {
                                 onTap: () async {
                                   final data = await openDialog("Name");
                                   setState(() {
-                                    if (data != null)
+                                    if (data != null) {
                                       investigatorAboutData["Name"] = data;
+                                      saveInvestigatorAboutData();
+                                    }
                                   });
                                 },
                               ),
@@ -216,9 +289,11 @@ class _MainState extends State<Main> {
                                 onTap: () async {
                                   final data = await openDialog("Occupation");
                                   setState(() {
-                                    if (data != null)
+                                    if (data != null) {
                                       investigatorAboutData["Occupation"] =
                                           data;
+                                      saveInvestigatorAboutData();
+                                    }
                                   });
                                 },
                               ),
@@ -229,8 +304,10 @@ class _MainState extends State<Main> {
                                 onTap: () async {
                                   final data = await openDialog("Age");
                                   setState(() {
-                                    if (data != null)
+                                    if (data != null) {
                                       investigatorAboutData["Age"] = data;
+                                      saveInvestigatorAboutData();
+                                    }
                                   });
                                 },
                               ),
@@ -242,8 +319,10 @@ class _MainState extends State<Main> {
                                 onTap: () async {
                                   final data = await openDialog("Residence");
                                   setState(() {
-                                    if (data != null)
+                                    if (data != null) {
                                       investigatorAboutData["Residence"] = data;
+                                      saveInvestigatorAboutData();
+                                    }
                                   });
                                 },
                               ),
@@ -256,9 +335,11 @@ class _MainState extends State<Main> {
                                   final data =
                                       await openDialog("Place of birth");
                                   setState(() {
-                                    if (data != null)
+                                    if (data != null) {
                                       investigatorAboutData["PlaceOfBirth"] =
                                           data;
+                                      saveInvestigatorAboutData();
+                                    }
                                   });
                                 },
                               ),
@@ -320,6 +401,7 @@ class _MainState extends State<Main> {
                                 setState(() {
                                   characteristicLevel[index] =
                                       int.parse(data.toString());
+                                  saveCharacteristicLevel();
                                 });
                               } else {
                                 controller.text = "";
