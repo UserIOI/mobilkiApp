@@ -94,8 +94,12 @@ class _SkillsViewState extends State<SkillsView> {
               itemBuilder: (context, index) {
                 final skill = displayableList[index];
                 return SkillCard(
-                    skill: skill,
-                    saveChangesCallback: () { saveChanges(); });
+                  skill: skill,
+                  saveChangesCallback: saveChanges,
+                  nameListGetter: getNameList,
+                  deleteSkillSetter: deleteSkill,
+                  repositionSkillSetter: repositionSkill,
+                );
               }),
           ),
         ],
@@ -119,6 +123,34 @@ class _SkillsViewState extends State<SkillsView> {
     }
   }
 
+  void deleteSkill(Skill skill) {
+    setState(() {
+      skillList.remove(skill);
+      refreshDisplayableList();
+      saveChanges();
+    });
+  }
+
+  void repositionSkill(Skill skill) { // When skill's name changes, this method is call to position it alphabetically
+    int index = skillList.indexOf(skill);
+    setState(() {
+      while(index > 0 && skillList[index].name.toLowerCase().compareTo(skillList[index - 1].name.toLowerCase()) < 0) {
+        Skill temp = skillList[index - 1];
+        skillList[index - 1] = skillList[index];
+        skillList[index] = temp;
+        index -= 1;
+      }
+      while(index < skillList.length - 1 && skillList[index].name.toLowerCase().compareTo(skillList[index + 1].name.toLowerCase()) > 0) {
+        Skill temp = skillList[index + 1];
+        skillList[index + 1] = skillList[index];
+        skillList[index] = temp;
+        index += 1;
+      }
+      refreshDisplayableList();
+      saveChanges();
+    });
+  }
+
   void refreshDisplayableList() { // refreshed displayableList taking into account current query in search bar
     setState(() {
       String query = searchBarController.text;
@@ -135,11 +167,14 @@ class _SkillsViewState extends State<SkillsView> {
     });
   }
 
+  List<String> getNameList() { // returns list of names of all skills, used to avoid duplicates
+    return skillList.map((skill) => skill.name).toList();
+  }
+
   void openNewSkillRoute() async {
-    List<String> nameList = skillList.map((skill) => skill.name).toList();
     Skill? skill = await Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => NewSkillRoute(nameList: nameList)),
+      MaterialPageRoute(builder: (context) => NewSkillRoute(nameList: getNameList())),
     );
 
     if(skill != null) {
