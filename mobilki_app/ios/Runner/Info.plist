@@ -47,5 +47,13 @@
 	<true/>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
+
+	<key>NSPhotoLibraryUsageDescription </key>
+	<string>Choosing profile picture from gallery</string>
+	<key>NSCameraUsageDescription</key>
+	<string>Taking profile picture</string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>Required by image_picker plugin</string>
+	
 </dict>
 </plist>

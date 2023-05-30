@@ -39,6 +39,7 @@ dependencies:
   cupertino_icons: ^1.0.2
   dice_icons: ^0.1.5
   flutter_quill: ^6.4.4
+  image_picker: ^0.8.7+5
 
 dev_dependencies:
   flutter_test:

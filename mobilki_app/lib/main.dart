@@ -1,3 +1,4 @@
+import 'main_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:dice_icons/dice_icons.dart';
 import 'package:hive/hive.dart';
@@ -29,10 +30,10 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   int index = 0;
   final screens = [
-    //Main()
-    //Skills()
+    const Main(),
     const Center(child: Text('Main', style: TextStyle(fontSize: 72))),
     const SkillsView(),
+    const Center(child: Text('Skills', style: TextStyle(fontSize: 72))),
     const Center(child: Text('Equipment', style: TextStyle(fontSize: 72))),
     notes(playerName),
   ];
@@ -93,15 +94,3 @@ void _onVerticalDragStartHandler() {
 void _onHorizontalDragStartHandler() {
   print("bbbbbb");
 }
-
-// class MyApp1 extends StatelessWidget {
-//   @override
-//   Widget build(BuildContext context) {
-//     return MaterialApp(
-//       home: Scaffold(
-//         appBar: AppBar(title: Text("Model Viewer")),
-//         body: Image(),
-//       ),
-//     );
-//   }
-// }

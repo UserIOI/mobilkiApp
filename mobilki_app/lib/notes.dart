@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:mobilki_app/data/hive_database.dart';
 import 'package:mobilki_app/database/boxes.dart';
 import 'package:mobilki_app/note.dart';
 import 'package:mobilki_app/newnotedialog.dart';
