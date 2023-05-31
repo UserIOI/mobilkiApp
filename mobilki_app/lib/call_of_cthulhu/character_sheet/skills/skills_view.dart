@@ -67,21 +67,50 @@ class _SkillsViewState extends State<SkillsView> {
                   itemBuilder: (context) => [
                     const PopupMenuItem(value: "new_ability",child: Text("Add new ability"),),
                     const PopupMenuItem(value: "change_column_count", child: Text("Change column count")),
+                    const PopupMenuItem(value: "reset_skills", child: Text("Reset all skills")),
                   ],
                   onSelected: (value) {
                     switch(value) {
                       case "new_ability" :
-                      openNewSkillRoute();
-                      break;
-                    case "change_column_count":
-                      showChangeColumnCountDialog(context, columnCount).then((value) {
-                        if(value != null) {
-                          setState(() {
-                            columnCount = value;
-                          });
-                        }
-                      });
-                      break;
+                        openNewSkillRoute();
+                        break;
+                      case "change_column_count":
+                        showChangeColumnCountDialog(context, columnCount).then((value) {
+                          if(value != null) {
+                            setState(() {
+                              columnCount = value;
+                           });
+                          }
+                        });
+                        break;
+                      case "reset_skills":
+                        showDialog<bool>(
+                          context: context,
+                          builder: (context) {
+                            return AlertDialog(
+                              title: const Text("Are you sure?"),
+                              content: const Text("You're about to reset all skills. That means setting all player levels to 0 and deleting your custom skills. Do you want to proceed?"),
+                              actions: [
+                                TextButton(
+                                    onPressed: () { Navigator.of(context).pop(false); },
+                                    child: const Text("Cancel"),
+                                ),
+                                TextButton(
+                                    onPressed: () { Navigator.of(context).pop(true); },
+                                    child: const Text(
+                                      "Reset",
+                                      style: TextStyle(color: Colors.red),
+                                    ),
+                                ),
+                              ],
+                            );
+                          }
+                        ).then((result) {
+                          if(result != null && result == true) {
+                            resetSkills();
+                          }
+                        });
+                        break;
                     }
                   },
               ),
@@ -190,5 +219,20 @@ class _SkillsViewState extends State<SkillsView> {
         saveChanges();
       });
     }
+  }
+
+  void resetSkills() {
+    setState(() {
+      List<Skill> tempList = [];
+      for(Skill skill in skillList) {
+        if(!skill.isUserCreated) {
+          skill.userLevel = 0;
+          tempList.add(skill);
+        }
+      }
+      skillList = tempList;
+      refreshDisplayableList();
+      saveChanges();
+    });
   }
 }
