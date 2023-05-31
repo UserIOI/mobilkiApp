@@ -12,33 +12,21 @@ class EditSkillRouteDefault extends StatefulWidget {
 
 class _EditSkillRouteDefaultState extends State<EditSkillRouteDefault> {
   int userLevel = 0; // Local user level displayed by the dialog, this value is saved into skill object if "Save" button is clicked
-  bool canBeSaved = false; // Controls if the "Save" button is active
-  bool canBeLower = true; // Controls if decrement button is active, it's true if userLevel is greater than 0
-  bool canBeHigher = true; // Controls if increment button is active, it's true if total success chance is lower than 99
-  String cannotSaveMessage = "No changes have been done"; // Message displayed explaining why changes cannot be saved
+  bool isLevelValid = true; // Controls if the "Save" button is active
   TextEditingController userLevelController = TextEditingController(); // Controller used to change and save the value in the TextField
+  bool isSnackBarActive = false;
 
   @override
   void initState() {
     super.initState();
     userLevel = widget.skill.userLevel;
     userLevelController = TextEditingController(text: "$userLevel");
-    userLevelController.addListener(textEditingListener);
-    if (userLevel <= 0) {
-      canBeLower = false;
-    }
-    if (widget.skill.baseLevel + userLevel >= 99) {
-      canBeHigher = false;
-    }
+    userLevelController.addListener(userLevelListener);
   }
 
-  void textEditingListener() {
-    int level = userLevelController.text.isEmpty ? 0 : int.parse(
-        userLevelController.text); // Empty field is treated as level 0
-    if (level !=
-        userLevel) { // updateUserLevel is only called if the new value is different to the old one
-      updateUserLevel(level, false);
-    }
+  void userLevelListener() {
+    userLevel = userLevelController.text.isEmpty ? 0 : int.parse(userLevelController.text);
+    updateUserLevel();
   }
 
   @override
@@ -47,32 +35,41 @@ class _EditSkillRouteDefaultState extends State<EditSkillRouteDefault> {
     super.dispose();
   }
 
-  void updateUserLevel(int level, bool updateTextField) {
-    // updateTextField is used to prevent text field listener updating the text field multiple times
+  void updateUserLevel() {
     setState(() {
-      userLevel = level;
-      if (updateTextField) { // Listener is temporarily removed to not trigger more updates
-        userLevelController.removeListener(textEditingListener);
-        userLevelController.text = "$userLevel";
-        userLevelController.addListener(textEditingListener);
-      }
-      // updating canBeSaved and cannotSaveMessage
-      if (widget.skill.userLevel == userLevel) {
-        cannotSaveMessage = "No changes have been done";
-        canBeSaved = false;
-      } else if (userLevel < 0) {
-        cannotSaveMessage = "User level has to be at least 0";
-        canBeSaved = false;
-      } else if (widget.skill.baseLevel + userLevel > 99) {
-        cannotSaveMessage = "Total score cannot exceed 99";
+      if (widget.skill.baseLevel + userLevel > 99) { // is success chance <= 99?
+        isLevelValid = false;
+        if(!isSnackBarActive) { // New SnackBar is shown only, if there is no active snack bar
+          isSnackBarActive = true;
+          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+            content: const Text('Success chance has to be 99 at most'),
+            duration: const Duration(seconds: 2),
+            action: SnackBarAction(
+              label: 'OK',
+              onPressed: () {
+                ScaffoldMessenger
+                    .of(context)
+                    .hideCurrentSnackBar;
+              },
+            ),
+          ))
+              .closed.then((reason) { // if SnackBar is closed, new one can be shown
+            isSnackBarActive = false;
+          });
+        }
       } else {
-        cannotSaveMessage = "";
-        canBeSaved = true;
+        isLevelValid = true;
+        ScaffoldMessenger.of(context).clearSnackBars();
       }
-      // updating canBeLower and canBeHigher
-      canBeLower = userLevel > 0 ? true : false;
-      canBeHigher = widget.skill.baseLevel + userLevel < 99 ? true : false;
     });
+  }
+
+  void changeUserLevel(level) {
+    userLevelController.removeListener(userLevelListener);
+    userLevel = level;
+    userLevelController.text = "$userLevel";
+    userLevelController.addListener(userLevelListener);
+    updateUserLevel();
   }
 
   @override
@@ -81,77 +78,172 @@ class _EditSkillRouteDefaultState extends State<EditSkillRouteDefault> {
       appBar: AppBar(
         title: const Text("Edit skill"),
       ),
-      body: Column(
-        children: [
-          Text(widget.skill.name),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(16, 16, 16, 16),
+          child: Column(
             children: [
-              const Text("Base level:"),
-              Text(" ${widget.skill.baseLevel}"),
-            ],
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              const Text("User level: "),
-              Row(
-                children: [
-                  IconButton(
-                      onPressed: canBeLower
-                          ? () { // setting onPressed to null disables the button
-                        if (widget.skill.baseLevel + userLevel > 99) {
-                          updateUserLevel(99 - widget.skill.baseLevel, true);
-                        } else {
-                          updateUserLevel(userLevel - 1, true);
-                        }
-                      }
-                          : null,
-                      icon: const Icon(Icons.chevron_left)),
-                  SizedBox(
-                    width: 40,
-                    child: TextField(
-                      controller: userLevelController,
-                      inputFormatters: [
-                        FilteringTextInputFormatter.digitsOnly,
-                        LengthLimitingTextInputFormatter(2),
-                      ],
-                      keyboardType: TextInputType.number,
-                    ),
+              Align(
+                alignment: Alignment.topLeft,
+                child: Text(
+                  widget.skill.name,
+                  style: const TextStyle(
+                    fontSize: 40,
                   ),
-                  IconButton(
-                      onPressed: canBeHigher ? () {
-                        if (userLevel < 0) {
-                          updateUserLevel(0, true);
-                        } else {
-                          updateUserLevel(userLevel + 1, true);
-                        }
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(top: 16.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    const Text(
+                      "Base level:",
+                      style: TextStyle(
+                        fontSize: 20,
+                      ),
+                    ),
+                    SizedBox(
+                      width: 136,
+                      child: Center(
+                        child: Text(
+                          "${widget.skill.baseLevel}",
+                          style: const TextStyle(
+                            fontSize: 20,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(top: 16.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    const Text(
+                      "Player level:",
+                      style: TextStyle(
+                        fontSize: 20,
+                      ),
+                    ),
+                    SizedBox(
+                      width: 136,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          IconButton(
+                              onPressed: userLevel > 0 ? () { // setting onPressed to null disables the button
+                                if (widget.skill.baseLevel + userLevel > 99) {
+                                  changeUserLevel(99 - widget.skill.baseLevel);
+                                } else {
+                                  changeUserLevel(userLevel - 1);
+                                }
+                              } : null,
+                              icon: const Icon(Icons.chevron_left)),
+                          SizedBox(
+                            width: 40,
+                            child: TextField(
+                              controller: userLevelController,
+                              textAlign: TextAlign.center,
+                              style: const TextStyle(
+                                fontSize: 20,
+                              ),
+                              inputFormatters: [
+                                FilteringTextInputFormatter.digitsOnly,
+                                LengthLimitingTextInputFormatter(2),
+                              ],
+                              decoration: const InputDecoration(
+                                border: InputBorder.none,
+                              ),
+                              keyboardType: TextInputType.number,
+                            ),
+                          ),
+                          IconButton(
+                              onPressed: widget.skill.baseLevel + userLevel < 99 ? () {
+                                if (userLevel < 0) {
+                                  changeUserLevel(0);
+                                } else {
+                                  changeUserLevel(userLevel + 1);
+                                }
+                              } : null,
+                              icon: const Icon(Icons.chevron_right)),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(top: 16.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    const Text(
+                      "Success chance:",
+                      style: TextStyle(
+                        fontSize: 20,
+                      ),
+                    ),
+                    SizedBox(
+                      width: 136,
+                      child: Center(
+                        child: Text(
+                          "${widget.skill.baseLevel + userLevel}",
+                          style: TextStyle(
+                            fontSize: 20,
+                            color: widget.skill.baseLevel + userLevel <= 99 ? Colors.black : Colors.red,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(top: 16.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    ElevatedButton(
+                      onPressed: () { Navigator.pop(context, false); },
+                      child: const Padding(
+                        padding: EdgeInsets.all(12.0),
+                        child: Text(
+                          "Cancel",
+                          style: TextStyle(
+                            fontSize: 15,
+                          ),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(width: 20),
+                    ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.green,
+                        disabledBackgroundColor: Colors.green.withOpacity(.8)
+                      ),
+                      onPressed: isLevelValid ? () {
+                        widget.skill.userLevel = userLevel;
+                        Navigator.pop(context, true);
                       } : null,
-                      icon: const Icon(Icons.chevron_right)),
-                ],
+                      child: const Padding(
+                        padding: EdgeInsets.all(12.0),
+                        child: Text(
+                          "Save",
+                          style: TextStyle(
+                            fontSize: 15,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ],
           ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              const Text("Success chance:"),
-              Text("${widget.skill.baseLevel + userLevel}"),
-            ],
-          ),
-          Text(cannotSaveMessage),
-          Row(
-            children: [
-              TextButton(onPressed: () {
-                Navigator.pop(context, false);
-                }, child: const Text("Cancel")),
-              TextButton(onPressed: canBeSaved ? () {
-                widget.skill.userLevel = userLevel;
-                Navigator.pop(context, true);
-              } : null, child: const Text("Save")),
-            ],
-          ),
-        ],
+        ),
       ),
     );
   }
