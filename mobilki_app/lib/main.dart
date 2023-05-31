@@ -11,18 +11,23 @@ import 'database/player.dart';
 import 'package:mobilki_app/call_of_cthulhu/character_sheet/skills/skills_view.dart';
 
 //* Tutaj przy wyborze postaci bedzie trzeba update zrobic na nazwie aby ja wrzucic do notes i aby wziac danego gracza notatki*/
-final String playerName = 'Abrakadabra';
-void main() async {
-  await Hive.initFlutter();
+late String playerName; //'Abrakadabra';
+// void main() async {
+//   await Hive.initFlutter();
 
-  Hive.registerAdapter(PlayerAdapter());
-  print("aa");
-  boxPlayers = await Hive.openBox<Player>('play');
-  print("bb");
-  runApp(MaterialApp(debugShowCheckedModeBanner: false, home: MyHomePage()));
-}
+//   Hive.registerAdapter(PlayerAdapter());
+//   print("aa");
+//   boxPlayers = await Hive.openBox<Player>('play');
+//   print("bb");
+//   runApp(MaterialApp(debugShowCheckedModeBanner: false, home: MyHomePage()));
+// }
 
 class MyHomePage extends StatefulWidget {
+  final String playerNAME;
+  MyHomePage(this.playerNAME) {
+    playerName = playerNAME;
+  }
+
   @override
   State<MyHomePage> createState() => _MyHomePageState();
 }
