@@ -17,7 +17,7 @@ void main() async {
 
   Hive.registerAdapter(PlayerAdapter());
   print("aa");
-  boxPlayers = await Hive.openBox<Player>('play');
+  boxPlayers = await Hive.openBox<Player>('play1');
   print("bb");
   runApp(MaterialApp(debugShowCheckedModeBanner: false, home: MyHomePage()));
 }
@@ -31,9 +31,7 @@ class _MyHomePageState extends State<MyHomePage> {
   int index = 0;
   final screens = [
     Main(playerName),
-    const Center(child: Text('Main', style: TextStyle(fontSize: 72))),
     const SkillsView(),
-    const Center(child: Text('Skills', style: TextStyle(fontSize: 72))),
     const Center(child: Text('Equipment', style: TextStyle(fontSize: 72))),
     notes(playerName),
   ];
