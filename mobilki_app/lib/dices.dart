@@ -50,7 +50,7 @@ class _ParentWidgetState extends State<dices> {
     while (true) {
       i = random.nextInt((MediaQuery.of(context).size.width - 75).toInt());
       j = random
-          .nextInt((MediaQuery.of(context).size.height * 0.6 - 75).toInt());
+          .nextInt((MediaQuery.of(context).size.height * 0.55 - 75).toInt());
       cordinates.add([i.toDouble(), j.toDouble()]);
       if (!checkAllCollisions(cordinates)) {
         print("$i $j");
