@@ -269,9 +269,8 @@ class _MainState extends State<Main> {
                             children: [
                               GestureDetector(
                                 child: InvestigatorAboutInfo(
-                                    label: "Name",
-                                    data: player.name
-                                        //investigatorAboutData["Name"]
+                                    label: "Name", data: player.name
+                                    //investigatorAboutData["Name"]
                                     ),
                                 // onTap: () async {
                                 //   final data = await openDialog("Name");
@@ -396,10 +395,12 @@ class _MainState extends State<Main> {
                               style: TextStyle(fontSize: 24),
                             ),
                             onTap: () async {
-                              final data =
-                                  await openDialog(characteristic[index]);
+                              final data = await openDialog(characteristic[index]);
+                              final dataInt = int.tryParse(data.toString());
                               if (data != null &&
-                                  int.tryParse(data.toString()) != null) {
+                                  dataInt != null &&
+                                  dataInt <= 100 &&
+                                  dataInt >= 0) {
                                 setState(() {
                                   characteristicLevel[index] =
                                       int.parse(data.toString());
