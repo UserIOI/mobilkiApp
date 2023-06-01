@@ -247,6 +247,8 @@ class _ParentWidgetState extends State<dices> {
                           child: Column(children: [
                             Text("d6"),
                             ElevatedButton(
+                              style: ElevatedButton.styleFrom(
+                                  backgroundColor: Colors.red),
                               child: Text('$d6'),
                               onPressed: () {
                                 setState(() {
@@ -260,6 +262,8 @@ class _ParentWidgetState extends State<dices> {
                           child: Column(children: [
                             Text("d8"),
                             ElevatedButton(
+                              style: ElevatedButton.styleFrom(
+                                  backgroundColor: Colors.red),
                               child: Text('$d8'),
                               onPressed: () {
                                 setState(() {
@@ -273,6 +277,8 @@ class _ParentWidgetState extends State<dices> {
                           child: Column(children: [
                             Text("d10"),
                             ElevatedButton(
+                              style: ElevatedButton.styleFrom(
+                                  backgroundColor: Colors.red),
                               child: Text('$d10'),
                               onPressed: () {
                                 setState(() {
@@ -291,6 +297,8 @@ class _ParentWidgetState extends State<dices> {
                           child: Column(children: [
                             Text("d12"),
                             ElevatedButton(
+                              style: ElevatedButton.styleFrom(
+                                  backgroundColor: Colors.red),
                               child: Text('$d12'),
                               onPressed: () {
                                 setState(() {
@@ -304,6 +312,8 @@ class _ParentWidgetState extends State<dices> {
                           child: Column(children: [
                             Text("d20"),
                             ElevatedButton(
+                              style: ElevatedButton.styleFrom(
+                                  backgroundColor: Colors.red),
                               child: Text('$d20'),
                               onPressed: () {
                                 setState(() {
@@ -317,6 +327,8 @@ class _ParentWidgetState extends State<dices> {
                           child: Column(children: [
                             Text("d100"),
                             ElevatedButton(
+                              style: ElevatedButton.styleFrom(
+                                  backgroundColor: Colors.red),
                               child: Text('$d100'),
                               onPressed: () {
                                 setState(() {
