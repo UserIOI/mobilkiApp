@@ -35,7 +35,7 @@ class _MyHomePageState extends State<MyHomePage> {
   double deviceWidth = 0, deviceHeight = 0;
   final screens = [
     Main(playerName),
-    const SkillsView(),
+    SkillsView(playerName: playerName),
     const Center(child: Text('Equipment', style: TextStyle(fontSize: 72))),
     notes(playerName),
   ];
