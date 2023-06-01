@@ -270,16 +270,18 @@ class _MainState extends State<Main> {
                               GestureDetector(
                                 child: InvestigatorAboutInfo(
                                     label: "Name",
-                                    data: investigatorAboutData["Name"]),
-                                onTap: () async {
-                                  final data = await openDialog("Name");
-                                  setState(() {
-                                    if (data != null) {
-                                      investigatorAboutData["Name"] = data;
-                                      saveInvestigatorAboutData();
-                                    }
-                                  });
-                                },
+                                    data: player.name
+                                        //investigatorAboutData["Name"]
+                                    ),
+                                // onTap: () async {
+                                //   final data = await openDialog("Name");
+                                //   setState(() {
+                                //     if (data != null) {
+                                //       investigatorAboutData["Name"] = data;
+                                //       saveInvestigatorAboutData();
+                                //     }
+                                //   });
+                                // },
                               ),
                               GestureDetector(
                                 child: InvestigatorAboutInfo(
