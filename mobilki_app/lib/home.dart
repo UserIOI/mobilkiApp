@@ -77,7 +77,7 @@ class _HomeState extends State<Home> {
   Future addInvestigatorDialog() => showDialog<String>(
         context: context,
         builder: (context) => AlertDialog(
-          title: Text(
+          title: const Text(
             "Enter Name of the new Investigator",
             textAlign: TextAlign.center,
           ),
@@ -108,7 +108,7 @@ class _HomeState extends State<Home> {
                           Toast.LENGTH_SHORT, // Duration of the toast message
                       gravity: ToastGravity
                           .CENTER, // Position of the toast message on the screen
-                      backgroundColor: Color.fromARGB(255, 56, 56,
+                      backgroundColor: const Color.fromARGB(255, 56, 56,
                           56), // Background color of the toast message
                       textColor:
                           Colors.white, // Text color of the toast message
@@ -124,7 +124,7 @@ class _HomeState extends State<Home> {
                           Toast.LENGTH_SHORT, // Duration of the toast message
                       gravity: ToastGravity
                           .BOTTOM, // Position of the toast message on the screen
-                      backgroundColor: Color.fromARGB(255, 56, 56,
+                      backgroundColor: const  Color.fromARGB(255, 56, 56,
                           56), // Background color of the toast message
                       textColor:
                           Colors.white, // Text color of the toast message
@@ -146,7 +146,7 @@ class _HomeState extends State<Home> {
                         Toast.LENGTH_SHORT, // Duration of the toast message
                     gravity: ToastGravity
                         .BOTTOM, // Position of the toast message on the screen
-                    backgroundColor: Color.fromARGB(255, 56, 56,
+                    backgroundColor: const Color.fromARGB(255, 56, 56,
                         56), // Background color of the toast message
                     textColor: Colors.white, // Text color of the toast message
                   );
@@ -169,7 +169,7 @@ class _HomeState extends State<Home> {
             print("Clicked");
             print("listLength = $counter");
           },
-          child: Icon(Icons.add),
+          child: const Icon(Icons.add),
         ),
         body: Center(
           child: Column(
@@ -307,7 +307,7 @@ class _InvestigatorCardState extends State<InvestigatorCard> {
         child: Center(
           child: Text(
             "${widget.investigatorName}",
-            style: TextStyle(fontSize: 18),
+            style: const TextStyle(fontSize: 18),
             textAlign: TextAlign.center,
           ),
         ),

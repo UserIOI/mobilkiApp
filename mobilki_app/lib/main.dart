@@ -6,27 +6,15 @@ import 'package:hive_flutter/hive_flutter.dart';
 import 'package:mobilki_app/notes.dart';
 import 'package:mobilki_app/dices.dart';
 import 'dices.dart';
-
 import 'database/boxes.dart';
 import 'database/player.dart';
-//import 'package:model_viewer_plus/model_viewer_plus.dart';
 import 'package:mobilki_app/call_of_cthulhu/character_sheet/skills/skills_view.dart';
 
-//* Tutaj przy wyborze postaci bedzie trzeba update zrobic na nazwie aby ja wrzucic do notes i aby wziac danego gracza notatki*/
-late String playerName; //'Abrakadabra';
-// void main() async {
-//   await Hive.initFlutter();
-
-//   Hive.registerAdapter(PlayerAdapter());
-//   print("aa");
-//   boxPlayers = await Hive.openBox<Player>('play');
-//   print("bb");
-//   runApp(MaterialApp(debugShowCheckedModeBanner: false, home: MyHomePage()));
-// }
+late String playerName;
 
 class MyHomePage extends StatefulWidget {
   final String playerNAME;
-  MyHomePage(this.playerNAME) {
+  MyHomePage(this.playerNAME, {super.key}) {
     playerName = playerNAME;
   }
 
@@ -72,7 +60,7 @@ class _MyHomePageState extends State<MyHomePage> {
           body: screens[index],
           bottomNavigationBar: NavigationBarTheme(
             data: NavigationBarThemeData(
-              indicatorColor: Color.fromARGB(185, 0, 153, 255),
+              indicatorColor: const  Color.fromARGB(185, 0, 153, 255),
               labelTextStyle: MaterialStateProperty.all(const TextStyle(
                   fontSize: 14,
                   fontWeight: FontWeight.w500,
@@ -82,7 +70,7 @@ class _MyHomePageState extends State<MyHomePage> {
               animationDuration: const Duration(seconds: 1),
               labelBehavior: NavigationDestinationLabelBehavior.alwaysShow,
               height: 70,
-              backgroundColor: Color.fromARGB(255, 227, 171, 0),
+              backgroundColor: const  Color.fromARGB(255, 227, 171, 0),
               selectedIndex: index,
               onDestinationSelected: (index) =>
                   setState(() => this.index = index),

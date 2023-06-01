@@ -9,7 +9,7 @@ late String playerName;
 
 class Main extends StatefulWidget {
   String playerNAME;
-  Main(this.playerNAME) {
+  Main(this.playerNAME, {super.key}) {
     playerName = playerNAME;
   }
 
@@ -147,11 +147,11 @@ class _MainState extends State<Main> {
                   controller.text = ""; //clear textfield xd but works
                   Navigator.of(context).pop(null);
                 },
-                child: Text("Cancel"),
+                child: const Text("Cancel"),
               ),
               TextButton(
                   onPressed: () => Navigator.of(context).pop(controller.text),
-                  child: Text("Confirm")),
+                  child: const Text("Confirm")),
             ],
           ),
         );
@@ -159,7 +159,7 @@ class _MainState extends State<Main> {
     Future profilePictureSelectionDialog() => showDialog(
           context: context,
           builder: (context) => AlertDialog(
-            title: Text("Select investigator's picture"),
+            title: const Text("Select investigator's picture"),
             content: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
@@ -168,16 +168,16 @@ class _MainState extends State<Main> {
                     await pickImage(ImageSource.gallery);
                     Navigator.of(context).pop();
                   },
-                  backgroundColor: Color.fromARGB(255, 134, 88, 46),
-                  shape: BeveledRectangleBorder(
+                  backgroundColor: const Color.fromARGB(255, 134, 88, 46),
+                  shape: const BeveledRectangleBorder(
                     borderRadius: BorderRadius.all(Radius.circular(3)),
                   ),
-                  child: Icon(Icons.photo_size_select_actual_rounded),
+                  child: const Icon(Icons.photo_size_select_actual_rounded),
                 ),
-                Divider(
+                const Divider(
                   height: 30,
                 ),
-                SizedBox(
+                const SizedBox(
                   width: 10,
                 ),
                 FloatingActionButton(
@@ -185,11 +185,11 @@ class _MainState extends State<Main> {
                     await pickImage(ImageSource.camera);
                     Navigator.of(context).pop();
                   },
-                  backgroundColor: Color.fromARGB(255, 134, 88, 46),
-                  shape: BeveledRectangleBorder(
+                  backgroundColor: const  Color.fromARGB(255, 134, 88, 46),
+                  shape: const BeveledRectangleBorder(
                     borderRadius: BorderRadius.all(Radius.circular(3)),
                   ),
-                  child: Icon(Icons.camera_alt),
+                  child: const Icon(Icons.camera_alt),
                 ),
               ],
             ),
@@ -199,7 +199,7 @@ class _MainState extends State<Main> {
                   controller.text = ""; //clear textfield xd but works
                   Navigator.of(context).pop(null);
                 },
-                child: Text("Cancel"),
+                child: const Text("Cancel"),
               ),
             ],
           ),
@@ -209,16 +209,16 @@ class _MainState extends State<Main> {
       home: Scaffold(
         body: SafeArea(
           child: Card(
-            margin: EdgeInsets.all(20),
-            color: Color.fromARGB(255, 225, 216, 190),
+            margin: const EdgeInsets.all(20),
+            color: const Color.fromARGB(255, 225, 216, 190),
             child: Column(
               children: [
-                FittedBox(
+                const FittedBox(
                   child: Card(
                     elevation: 5,
                     margin: EdgeInsets.all(30),
                     child: Padding(
-                      padding: const EdgeInsets.all(10.0),
+                      padding: EdgeInsets.all(10.0),
                       child: Text(
                         'Investigator Data',
                         style: TextStyle(
@@ -231,7 +231,7 @@ class _MainState extends State<Main> {
                 FittedBox(
                   child: Card(
                     elevation: 5,
-                    margin: EdgeInsets.only(left: 30, right: 30),
+                    margin: const EdgeInsets.only(left: 30, right: 30),
                     child: Padding(
                       padding: const EdgeInsets.all(20.0),
                       child: Row(
@@ -252,7 +252,7 @@ class _MainState extends State<Main> {
                                     height: 100,
                                     fit: BoxFit.cover,
                                   )
-                                : SizedBox(
+                                : const SizedBox(
                                     width: 100,
                                     height: 100,
                                     child: Icon(
@@ -261,7 +261,7 @@ class _MainState extends State<Main> {
                                     ),
                                   ),
                           ),
-                          SizedBox(
+                          const SizedBox(
                             width: 20,
                           ),
                           Column(
@@ -351,12 +351,12 @@ class _MainState extends State<Main> {
                     ),
                   ),
                 ),
-                FittedBox(
+                const FittedBox(
                   child: Card(
                     margin: EdgeInsets.only(top: 30, bottom: 20),
                     elevation: 5,
                     child: Padding(
-                      padding: const EdgeInsets.all(8.0),
+                      padding:  EdgeInsets.all(8.0),
                       child: Text(
                         "Characteristics",
                         style: TextStyle(fontSize: 20),
@@ -371,7 +371,7 @@ class _MainState extends State<Main> {
                       left: 50,
                     ),
                     child: GridView.builder(
-                      gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
+                      gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
                         maxCrossAxisExtent: 200,
                         childAspectRatio: 5 / 3,
                         crossAxisSpacing: 25,
@@ -381,21 +381,22 @@ class _MainState extends State<Main> {
                       itemBuilder: (context, index) {
                         return Container(
                           alignment: Alignment.center,
-                          margin: EdgeInsets.only(top: 11, bottom: 11),
+                          margin: const EdgeInsets.only(top: 11, bottom: 11),
                           decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(20),
-                              color: Color.fromARGB(255, 235, 162, 28)),
+                              color: const Color.fromARGB(255, 235, 162, 28)),
                           child: ListTile(
                             title: Text(
                               characteristic[index],
-                              style: TextStyle(fontSize: 20),
+                              style: const TextStyle(fontSize: 20),
                             ),
                             trailing: Text(
                               characteristicLevel[index].toString(),
-                              style: TextStyle(fontSize: 24),
+                              style: const TextStyle(fontSize: 24),
                             ),
                             onTap: () async {
-                              final data = await openDialog(characteristic[index]);
+                              final data =
+                                  await openDialog(characteristic[index]);
                               final dataInt = int.tryParse(data.toString());
                               if (data != null &&
                                   dataInt != null &&
@@ -416,7 +417,7 @@ class _MainState extends State<Main> {
                     ),
                   ),
                 ),
-                SizedBox(
+                const SizedBox(
                   height: 30,
                 ),
               ],
@@ -441,12 +442,12 @@ class InvestigatorAboutInfo extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       color: Colors.amber,
-      margin: EdgeInsets.only(
+      margin: const EdgeInsets.only(
         top: 5,
       ),
       child: Text(
         '$label: $data',
-        style: TextStyle(fontSize: 18),
+        style: const TextStyle(fontSize: 18),
       ),
     );
   }
