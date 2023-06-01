@@ -36,9 +36,7 @@ class _MyHomePageState extends State<MyHomePage> {
   int index = 0;
   final screens = [
     Main(playerName),
-    const Center(child: Text('Main', style: TextStyle(fontSize: 72))),
     const SkillsView(),
-    const Center(child: Text('Skills', style: TextStyle(fontSize: 72))),
     const Center(child: Text('Equipment', style: TextStyle(fontSize: 72))),
     notes(playerName),
   ];
