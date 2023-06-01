@@ -99,6 +99,23 @@ class Player {
     0,
     0,
   ];
+
+  // fields 8-11 are used for EquipmentView
+  @HiveField(8)
+  List characterWealth = [
+    0.0, // money
+    0.0, // spending
+    "week", // time period for spending
+  ];
+
+  @HiveField(9)
+  List<String> weapons = [];
+
+  @HiveField(10)
+  List<String> backpackItems = [];
+
+  @HiveField(11)
+  List<String> assets = [];
 }
 
 // use

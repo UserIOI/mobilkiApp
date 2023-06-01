@@ -10,6 +10,7 @@ import 'package:mobilki_app/database/player.dart';
 
 // uses package flutter_stagger_grid_view 0.6.2
 // https://pub.dev/packages/flutter_staggered_grid_view
+// TODO change playerName to widget.playerName
 
 class SkillsView extends StatefulWidget {
   final String playerName;
