@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mobilki_app/call_of_cthulhu/character_sheet/skills/change_column_count_dialog.dart';
 import 'package:mobilki_app/call_of_cthulhu/character_sheet/skills/new_skill_route.dart';
-import 'package:mobilki_app/main.dart';
 import 'skill.dart';
 import 'skill_card.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
@@ -10,7 +9,6 @@ import 'package:mobilki_app/database/player.dart';
 
 // uses package flutter_stagger_grid_view 0.6.2
 // https://pub.dev/packages/flutter_staggered_grid_view
-// TODO change playerName to widget.playerName
 
 class SkillsView extends StatefulWidget {
   final String playerName;
@@ -138,18 +136,18 @@ class _SkillsViewState extends State<SkillsView> {
   }
 
   List<Skill> getSkillsFromPlayer() {
-    if(!boxPlayers.containsKey(playerName)) {
+    if(!boxPlayers.containsKey(widget.playerName)) {
       return [];
     }
-    Player player = boxPlayers.get(playerName);
+    Player player = boxPlayers.get(widget.playerName);
     return player.skillList.map((skill) => Skill.fromString(skill)).toList();
   }
 
   void saveChanges() {
-    if(boxPlayers.containsKey(playerName)) {
-      Player player = boxPlayers.get(playerName);
+    if(boxPlayers.containsKey(widget.playerName)) {
+      Player player = boxPlayers.get(widget.playerName);
       player.skillList = skillList.map((skill) => skill.toString()).toList();
-      boxPlayers.put(playerName, player);
+      boxPlayers.put(widget.playerName, player);
     }
   }
 
