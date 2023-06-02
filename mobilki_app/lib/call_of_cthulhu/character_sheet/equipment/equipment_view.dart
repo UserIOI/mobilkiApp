@@ -189,63 +189,115 @@ class _EquipmentViewState extends State<EquipmentView> {
     );
   }
 
-  Widget buildCharacterBalanceRow() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        const Text("Balance:"),
-        SizedBox(
-          width: 60,
-          child: _editMode ?  TextField(
-            controller: _balanceController,
-            inputFormatters: [
-              FilteringTextInputFormatter.allow(RegExp(r'^\d+\.?\d{0,2}')),
+  Widget buildCharacterBalanceRow() { // I decided to put here the fragment that relies on _editMode property
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(8.0, 8.0, 0.0, 0.0),
+      child: Column(
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Expanded(
+                child: Row(
+                    children: [
+                      const Text(
+                        "Balance:",
+                        style: TextStyle(fontSize: 20),
+                      ),
+                      const SizedBox(width: 10),
+                      if (_editMode) Flexible(
+                        //width: 80,
+                        child: TextField(
+                          controller: _balanceController,
+                          style: const TextStyle(fontSize: 20),
+                          decoration: const InputDecoration(suffix: Text("\$")),
+                          inputFormatters: [
+                            FilteringTextInputFormatter.allow(RegExp(r'^\d+\.?\d{0,2}')),
+                          ],
+                          keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                        ),
+                      ) else Flexible(
+                        child: Text(
+                            "$_balance\$",
+                            style: const TextStyle(fontSize: 20),
+                          ),
+                      ),
+                    ],
+                  ),
+              ),
+              if (_editMode) Row(children: [
+                IconButton(onPressed: () {setState(() {
+                  _editMode = false;
+                  _balance = double.parse(_balanceController.text);
+                  _spending = double.parse(_spendingController.text);
+                  _timePeriod = _dropdownValue;
+                  saveWealthChanges();
+                });}, icon: const Icon(Icons.check, color: Colors.green)),
+                IconButton(onPressed: () {setState(() { _editMode = false; });}, icon: const Icon(Icons.close , color: Colors.red)),
+              ],
+              ) else IconButton(onPressed: _playerLoaded? () {setState(() {
+                _editMode = true;
+                _balanceController.text = "$_balance";
+                _spendingController.text = "$_spending";
+                _dropdownValue = _timePeriod;
+              });} : null, icon: const Icon(Icons.edit)),
             ],
-            keyboardType: const TextInputType.numberWithOptions(decimal: true),
-          ) : Text("$_balance\$"),
-        ),
-        const Text("-"),
-        SizedBox(
-          width: 60,
-          child: _editMode ?  TextField(
-            controller: _spendingController,
-            inputFormatters: [
-              FilteringTextInputFormatter.allow(RegExp(r'^\d+\.?\d{0,2}')),
-            ],
-            keyboardType: const TextInputType.numberWithOptions(decimal: true),
-          ) : Text("$_spending\$")
-        ),
-        const Text("/"),
-        _editMode ? DropdownButton<String>(
-          value: _dropdownValue,
-          icon: const Icon(Icons.arrow_drop_down),
-          items: const [
-            DropdownMenuItem(value: "day", child: Text("day")),
-            DropdownMenuItem(value: "week", child: Text("week")),
-            DropdownMenuItem(value: "fortnight", child: Text("fortnight")),
-            DropdownMenuItem(value: "month", child: Text("month")),
-            DropdownMenuItem(value: "quarter", child: Text("quarter")),
-            DropdownMenuItem(value: "year", child: Text("year")),
-          ],
-          onChanged: (String? value) { setState(() { _dropdownValue = value!; }); },
-        ) : Text(_timePeriod),
-        _editMode ? Row(children: [
-            IconButton(onPressed: () {setState(() {
-              _editMode = false;
-              _balance = double.parse(_balanceController.text);
-              _spending = double.parse(_spendingController.text);
-              _timePeriod = _dropdownValue;
-              saveWealthChanges();
-            });}, icon: const Icon(Icons.check, color: Colors.green)),
-            IconButton(onPressed: () {setState(() { _editMode = false; });}, icon: const Icon(Icons.close , color: Colors.red)),
-          ],
-        ) : IconButton(onPressed: _playerLoaded? () {setState(() {
-          _editMode = true;
-          _balanceController.text = "$_balance";
-          _spendingController.text = "$_spending";
-          _dropdownValue = _timePeriod;
-        });} : null, icon: const Icon(Icons.edit)),
-      ],
+          ),
+          const SizedBox(height: 8),
+          FractionallySizedBox(
+            widthFactor: 1,
+            child: Row(
+                children: [
+                  const Text(
+                    "Spending:",
+                    style: TextStyle(fontSize: 20),
+                  ),
+                  const SizedBox(width: 10),
+                  if (_editMode) Flexible(
+                      child: TextField(
+                        controller: _spendingController,
+                        style: const TextStyle(fontSize: 20),
+                        decoration: const InputDecoration(suffix: Text("\$")),
+                        inputFormatters: [
+                          FilteringTextInputFormatter.allow(RegExp(r'^\d+\.?\d{0,2}')),
+                        ],
+                        keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                      ),
+                  ) else Flexible(
+                    child: Text(
+                      "$_spending\$",
+                      style: const TextStyle(fontSize: 20),
+                    ),
+                  ),
+                  const SizedBox(width: 10),
+                  const Text(
+                    "/",
+                    style: TextStyle(fontSize: 20),
+                  ),
+                  const SizedBox(width: 10),
+                  if (_editMode) DropdownButton<String>(
+                    value: _dropdownValue,
+                    onChanged: (String? value) => setState(() => _dropdownValue = value!),
+                    icon: const Icon(Icons.arrow_drop_down),
+                    items: const [
+                      DropdownMenuItem(value: "day", child: Text("day", style: TextStyle(fontSize: 20))),
+                      DropdownMenuItem(value: "week", child: Text("week", style: TextStyle(fontSize: 20))),
+                      DropdownMenuItem(value: "fortnight", child: Text("fortnight", style: TextStyle(fontSize: 20))),
+                      DropdownMenuItem(value: "month", child: Text("month", style: TextStyle(fontSize: 20))),
+                      DropdownMenuItem(value: "quarter", child: Text("quarter", style: TextStyle(fontSize: 20))),
+                      DropdownMenuItem(value: "year", child: Text("year", style: TextStyle(fontSize: 20))),
+                    ],
+                  ) else Text(
+                      _timePeriod,
+                      style: const TextStyle(fontSize: 20),
+                    ),
+                  const SizedBox(width: 16)
+                ],
+              ),
+          ),
+          const SizedBox(height: 8),
+        ],
+      ),
     );
   }
 
