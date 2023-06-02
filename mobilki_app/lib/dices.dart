@@ -199,6 +199,7 @@ class _ParentWidgetState extends State<dices> {
       child: Scaffold(
         appBar: AppBar(
           toolbarHeight: 0,
+          backgroundColor: Colors.transparent,
         ),
         body: Container(
           child: Column(

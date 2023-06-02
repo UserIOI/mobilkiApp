@@ -37,40 +37,42 @@ class _newnotedialog extends State<newnotedialog> {
   }
 
   @override
-  Widget build(BuildContext context) => Scaffold(
-        appBar: AppBar(
-          title: tt.Text("Note"),
+  Widget build(BuildContext context) => Flexible(
+        child: Scaffold(
+          appBar: AppBar(
+            title: tt.Text("Note"),
+          ),
+          body: Column(children: [
+            Container(
+              padding: const EdgeInsets.all(10),
+              child: TextField(
+                controller: titleData,
+                decoration: const InputDecoration(
+                  border: OutlineInputBorder(),
+                  labelText: 'Title',
+                ),
+                style: const TextStyle(fontSize: 20),
+              ),
+            ),
+            Container(
+              padding: const EdgeInsets.all(10),
+              child: TextField(
+                controller: contentData,
+                keyboardType: TextInputType.multiline,
+                maxLines: null,
+                decoration: const InputDecoration(
+                  border: OutlineInputBorder(),
+                  labelText: 'Content',
+                ),
+                style: const TextStyle(fontSize: 20),
+              ),
+            ),
+            ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.red, minimumSize: Size(100, 45)),
+                onPressed: () => {saveNote()},
+                child: const tt.Text("SAVE")),
+          ]),
         ),
-        body: Column(children: [
-          Container(
-            padding: const EdgeInsets.all(10),
-            child: TextField(
-              controller: titleData,
-              decoration: const InputDecoration(
-                border: OutlineInputBorder(),
-                labelText: 'Title',
-              ),
-              style: const TextStyle(fontSize: 20),
-            ),
-          ),
-          Container(
-            padding: const EdgeInsets.all(10),
-            child: TextField(
-              controller: contentData,
-              keyboardType: TextInputType.multiline,
-              maxLines: null,
-              decoration: const InputDecoration(
-                border: OutlineInputBorder(),
-                labelText: 'Content',
-              ),
-              style: const TextStyle(fontSize: 20),
-            ),
-          ),
-          ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.red, minimumSize: Size(100, 45)),
-              onPressed: () => {saveNote()},
-              child: const tt.Text("SAVE")),
-        ]),
       );
 }
