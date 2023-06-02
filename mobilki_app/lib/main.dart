@@ -1,3 +1,5 @@
+import 'package:mobilki_app/call_of_cthulhu/character_sheet/equipment/equipment_view.dart';
+
 import 'main_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:dice_icons/dice_icons.dart';
@@ -29,7 +31,7 @@ class _MyHomePageState extends State<MyHomePage> {
   final screens = [
     Main(playerName),
     SkillsView(playerName: playerName),
-    const Center(child: Text('Equipment', style: TextStyle(fontSize: 72))),
+    EquipmentView(playerName: playerName),
     notes(playerName),
   ];
   @override

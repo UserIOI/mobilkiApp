@@ -1,0 +1,1 @@
+enum Equipment { weapons, backpack, assets }

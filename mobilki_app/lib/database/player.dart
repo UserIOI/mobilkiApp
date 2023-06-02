@@ -21,7 +21,7 @@ class Player {
     "Credit Rating;0;0;false",
     "Cthulhu Mythos;0;0;false",
     "Disguise;5;0;false",
-    "Dodge;2;0;false", // TODO getDEX
+    "Dodge;2;0;false",
     "Drive Auto;20;0;false",
     "Electrical Repair;10;0;false",
     "Fast Talk;5;0;false",
@@ -32,7 +32,7 @@ class Player {
     "Intimidate;15;0;false",
     "Jump;25;0;false",
     "Language (Other);1;0;false",
-    "Language (Own);5;0;false", // TODO getEDU
+    "Language (Own);5;0;false",
     "Law;5;0;false",
     "Library Use;20;0;false",
     "Listen;20;0;false",
@@ -99,6 +99,23 @@ class Player {
     0,
     0,
   ];
+
+  // fields 8-11 are used for EquipmentView
+  @HiveField(8)
+  List characterWealth = [
+    0.0, // money
+    0.0, // spending
+    "week", // time period for spending
+  ];
+
+  @HiveField(9)
+  List<String> weapons = [];
+
+  @HiveField(10)
+  List<String> backpackItems = [];
+
+  @HiveField(11)
+  List<String> assets = [];
 }
 
 // use

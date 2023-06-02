@@ -17,6 +17,5 @@ class Skill {
   @override
   String toString() {
     return "$name;$baseLevel;$userLevel;$isUserCreated";
-    // TODO: forbid using ; in skill names
   }
 }
