@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:mobilki_app/call_of_cthulhu/character_sheet/equipment/equipment_item/equipment_card.dart';
+import 'package:mobilki_app/call_of_cthulhu/character_sheet/equipment/equipment_item/equipment_item.dart';
+import 'package:mobilki_app/call_of_cthulhu/character_sheet/equipment/equipment_item/new_item_route.dart';
 import 'package:mobilki_app/database/boxes.dart';
 
 import '../../../database/player.dart';
@@ -19,6 +22,8 @@ class _EquipmentViewState extends State<EquipmentView> {
   double _spending = 0;
   String _timePeriod = "week";
   String _dropdownValue = "week";
+  List<EquipmentItem> _backpackItemList = [];
+  List<EquipmentItem> _assetList = [];
   bool _playerLoaded = false;
   final TextEditingController _balanceController = TextEditingController();
   final TextEditingController _spendingController = TextEditingController();
@@ -32,6 +37,8 @@ class _EquipmentViewState extends State<EquipmentView> {
       _spending = player.characterWealth[1];
       _timePeriod = player.characterWealth[2];
       _dropdownValue = _timePeriod;
+      _backpackItemList = player.backpackItems.map((item) => EquipmentItem.fromString(item)).toList();
+      _assetList = player.assets.map((item) => EquipmentItem.fromString(item)).toList();
     } else {
       _playerLoaded = false;
       WidgetsBinding.instance
@@ -57,7 +64,13 @@ class _EquipmentViewState extends State<EquipmentView> {
 
   void saveWeaponsChanges() {}
 
-  void saveBackpackChanges() {}
+  void saveBackpackChanges() {
+    if(boxPlayers.containsKey(widget.playerName)) {
+      Player player = boxPlayers.get(widget.playerName);
+      player.backpackItems = _backpackItemList.map((item) => item.toString()).toList();
+      boxPlayers.put(widget.playerName, player);
+    }
+  }
 
   void saveAssetChanges() {}
 
@@ -104,16 +117,14 @@ class _EquipmentViewState extends State<EquipmentView> {
                       ),
                   ),
                   IconButton(
-                      onPressed: _playerLoaded ? () {} : null,
+                      onPressed: _playerLoaded ? () => addItem() : null,
                       icon: Icon(Icons.add, color: _playerLoaded ? Colors.green : Colors.grey),
                   ),
                 ],
               ),
             ),
             Flexible(
-              child: ListView(
-
-              ),
+              child: buildEquipmentList(),
             ),
           ],
         ),
@@ -178,5 +189,49 @@ class _EquipmentViewState extends State<EquipmentView> {
         });} : null, icon: const Icon(Icons.edit)),
       ],
     );
+  }
+
+  ListView buildEquipmentList() {
+    if(_selected == "weapons") {
+      return ListView();
+    } else if(_selected == "backpack") {
+      return ListView.builder(
+        itemCount: _backpackItemList.length,
+        itemBuilder: (context, index) {
+          return EquipmentCard(item: _backpackItemList[index]);
+        }
+      );
+    } else {
+      return ListView.builder(
+          itemCount: _assetList.length,
+          itemBuilder: (context, index) {
+            return EquipmentCard(item: _assetList[index]);
+          }
+      );
+    }
+  }
+
+  void addItem() async {
+    if(_selected == "weapons") {
+      // TODO
+    } else if(_selected == "backpack") {
+      EquipmentItem? item = await Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => NewItemRoute(type: _selected)),
+      );
+
+      if(item != null) {
+        setState(() {
+          int index;
+          for(index = 0; index < _backpackItemList.length; index++) {
+            if(_backpackItemList[index].name.toLowerCase().compareTo(item.name.toLowerCase()) > 0) {
+              break;
+            }
+          }
+          _backpackItemList.insert(index, item);
+          saveBackpackChanges();
+        });
+      }
+    }
   }
 }
