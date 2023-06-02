@@ -166,6 +166,7 @@ class _NewSkillRouteState extends State<NewItemRoute> {
                         ],
                         keyboardType: const TextInputType.numberWithOptions(decimal: true),
                         decoration: const InputDecoration(
+                          suffix: Text("\$"),
                           border: OutlineInputBorder(),
                           hintText: "Not set"
                         ),
