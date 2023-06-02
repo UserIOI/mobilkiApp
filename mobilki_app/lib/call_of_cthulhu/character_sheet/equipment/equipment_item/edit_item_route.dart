@@ -1,17 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:mobilki_app/call_of_cthulhu/character_sheet/equipment/equipment_enum.dart';
 import 'equipment_item.dart';
-import '../equipment_enum.dart';
 
-class NewItemRoute extends StatefulWidget {
+class EditItemRoute extends StatefulWidget {
+  final EquipmentItem item;
   final Equipment type;
-  const NewItemRoute({Key? key, required this.type}) : super(key: key);
+  const EditItemRoute({Key? key, required this.item, required this.type}) : super(key: key);
 
   @override
-  State<NewItemRoute> createState() => _NewSkillRouteState();
+  State<EditItemRoute> createState() => _NewSkillRouteState();
 }
 
-class _NewSkillRouteState extends State<NewItemRoute> {
+class _NewSkillRouteState extends State<EditItemRoute> {
   int count = 0;
   double? price;
   String name = "";
@@ -56,6 +57,9 @@ class _NewSkillRouteState extends State<NewItemRoute> {
         price = priceController.text.isEmpty ? null : double.parse(priceController.text);
       });
     });
+    nameController.text = widget.item.name;
+    countController.text = "${widget.item.count}";
+    priceController.text = widget.item.price != null ? "${widget.item.price}" : "";
     super.initState();
   }
 
@@ -71,7 +75,7 @@ class _NewSkillRouteState extends State<NewItemRoute> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.type == Equipment.weapons ? "Add new weapon" : widget.type == Equipment.backpack ? "Add new backpack item" : "Add new asset"),
+        title: Text(widget.type == Equipment.weapons ? "Edit weapon" : widget.type == Equipment.backpack ? "Edit backpack item" : "Edt asset"),
       ),
       body: SingleChildScrollView(
         child: Padding(
@@ -166,8 +170,8 @@ class _NewSkillRouteState extends State<NewItemRoute> {
                         ],
                         keyboardType: const TextInputType.numberWithOptions(decimal: true),
                         decoration: const InputDecoration(
-                          border: OutlineInputBorder(),
-                          hintText: "Not set"
+                            border: OutlineInputBorder(),
+                            hintText: "Not set"
                         ),
                       ),
                     ),
@@ -205,7 +209,21 @@ class _NewSkillRouteState extends State<NewItemRoute> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     ElevatedButton(
-                      onPressed: () { Navigator.pop(context); },
+                      style: ButtonStyle(backgroundColor: MaterialStateProperty.all(Colors.red)),
+                      onPressed: () => Navigator.pop(context, "delete"),
+                      child: const Padding(
+                        padding: EdgeInsets.all(12.0),
+                        child: Text(
+                          "Delete",
+                          style: TextStyle(
+                            fontSize: 15,
+                          ),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(width: 20),
+                    ElevatedButton(
+                      onPressed: () => Navigator.pop(context, "cancelled"),
                       child: const Padding(
                         padding: EdgeInsets.all(12.0),
                         child: Text(
@@ -223,8 +241,14 @@ class _NewSkillRouteState extends State<NewItemRoute> {
                           disabledBackgroundColor: Colors.green.withOpacity(.8)
                       ),
                       onPressed: isNameValid ? () {
-                        EquipmentItem item = EquipmentItem(name, count, price);
-                        Navigator.pop(context, item);
+                        widget.item.count = count;
+                        widget.item.price = price;
+                        String result = "changed";
+                        if(widget.item.name != name) {
+                          result = "reposition";
+                          widget.item.name = name;
+                        }
+                        Navigator.pop(context, result);
                       } : null,
                       child: const Padding(
                         padding: EdgeInsets.all(12.0),

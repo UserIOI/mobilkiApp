@@ -319,7 +319,7 @@ class _EditSkillRouteUserState extends State<EditSkillRouteUser> {
                     ),
                     const SizedBox(width: 20),
                     ElevatedButton(
-                      onPressed: () { Navigator.pop(context, "cancelled"); },
+                      onPressed: () => Navigator.pop(context, "cancelled"),
                       child: const Padding(
                         padding: EdgeInsets.all(12.0),
                         child: Text(

@@ -9,7 +9,7 @@ class EquipmentItem {
     final splitted = string.split(";");
     name = splitted[0];
     count = int.parse(splitted[1]);
-    price = splitted[2] != "" ? double.parse(splitted[2]) : null;
+    price = splitted[2] != "null" ? double.parse(splitted[2]) : null;
   }
 
   @override
