@@ -108,13 +108,17 @@ class _EditSkillRouteUserState extends State<EditSkillRouteUser> {
 
   @override
   void initState() {
+    name = widget.skill.name; // taking data from Skill
+    baseLevel = widget.skill.baseLevel;
+    userLevel = widget.skill.userLevel;
+
+    nameController.text = name; // setting values in TextFields
+    baseLevelController.text = "$baseLevel";
+    userLevelController.text = "$userLevel";
+
     nameController.addListener(nameListener); // applying input listeners
     baseLevelController.addListener(baseLevelListener);
     userLevelController.addListener(userLevelListener);
-
-    nameController.text = widget.skill.name; // this also updates local variables, because listeners aer already in place
-    baseLevelController.text = widget.skill.baseLevel.toString();
-    userLevelController.text = widget.skill.userLevel.toString();
 
     super.initState();
   }
