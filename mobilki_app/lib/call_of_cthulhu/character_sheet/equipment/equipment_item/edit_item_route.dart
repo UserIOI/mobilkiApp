@@ -194,7 +194,7 @@ class _NewSkillRouteState extends State<EditItemRoute> {
                       width: 167,
                       child: Center(
                         child: Text(
-                          price != null ? "${count * price!}" : "NaN",
+                          price != null ? "${count * price!}\$" : "NaN",
                           style: const TextStyle(
                             fontSize: 20,
                           ),
