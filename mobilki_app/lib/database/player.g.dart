@@ -24,13 +24,17 @@ class PlayerAdapter extends TypeAdapter<Player> {
       ..investigatorImagePath = fields[4] as String?
       ..investigatorAboutData = (fields[5] as Map).cast<String, String?>()
       ..characteristic = (fields[6] as List).cast<String>()
-      ..characteristicLevel = (fields[7] as List).cast<int>();
+      ..characteristicLevel = (fields[7] as List).cast<int>()
+      ..characterWealth = (fields[8] as List).cast<dynamic>()
+      ..weapons = (fields[9] as List).cast<String>()
+      ..backpackItems = (fields[10] as List).cast<String>()
+      ..assets = (fields[11] as List).cast<String>();
   }
 
   @override
   void write(BinaryWriter writer, Player obj) {
     writer
-      ..writeByte(8)
+      ..writeByte(12)
       ..writeByte(0)
       ..write(obj.name)
       ..writeByte(1)
@@ -46,7 +50,15 @@ class PlayerAdapter extends TypeAdapter<Player> {
       ..writeByte(6)
       ..write(obj.characteristic)
       ..writeByte(7)
-      ..write(obj.characteristicLevel);
+      ..write(obj.characteristicLevel)
+      ..writeByte(8)
+      ..write(obj.characterWealth)
+      ..writeByte(9)
+      ..write(obj.weapons)
+      ..writeByte(10)
+      ..write(obj.backpackItems)
+      ..writeByte(11)
+      ..write(obj.assets);
   }
 
   @override

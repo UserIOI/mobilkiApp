@@ -129,9 +129,8 @@ class _NewSkillRouteState extends State<NewSkillRoute> {
           padding: const EdgeInsets.fromLTRB(16, 16, 16, 16),
           child: Column(
             children: [
-              Align(
-                alignment: Alignment.topLeft,
-                child: Expanded(
+              FractionallySizedBox(
+                widthFactor: 1,
                   child: TextField(
                     controller: nameController,
                     style: const TextStyle(
@@ -146,7 +145,6 @@ class _NewSkillRouteState extends State<NewSkillRoute> {
                     ),
                   ),
                 ),
-              ),
               Padding(
                 padding: const EdgeInsets.only(top: 16.0),
                 child: Row(

@@ -64,7 +64,7 @@ class _SkillsViewState extends State<SkillsView> {
               )),
               PopupMenuButton(
                   itemBuilder: (context) => [
-                    const PopupMenuItem(value: "new_ability",child: Text("Add new ability"),),
+                    const PopupMenuItem(value: "new_ability",child: Text("Add new ability")),
                     const PopupMenuItem(value: "change_column_count", child: Text("Change column count")),
                     const PopupMenuItem(value: "reset_skills", child: Text("Reset all skills")),
                   ],

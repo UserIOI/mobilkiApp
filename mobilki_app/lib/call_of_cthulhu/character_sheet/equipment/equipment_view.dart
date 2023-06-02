@@ -165,7 +165,14 @@ class _EquipmentViewState extends State<EquipmentView> {
                       ),
                   ),
                   IconButton(
-                      onPressed: _playerLoaded ? () => addItem() : null,
+                      onPressed: _playerLoaded ? () {
+                        if(_editMode) {
+                          setState(() {
+                            _editMode = false;
+                          });
+                        }
+                        addItem();
+                      } : null,
                       icon: Icon(Icons.add, color: _playerLoaded ? Colors.green : Colors.grey),
                   ),
                 ],

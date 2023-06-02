@@ -138,23 +138,21 @@ class _EditSkillRouteUserState extends State<EditSkillRouteUser> {
           padding: const EdgeInsets.fromLTRB(16, 16, 16, 16),
           child: Column(
             children: [
-              Align(
-                alignment: Alignment.topLeft,
-                child: Expanded(
-                      child: TextField(
-                        controller: nameController,
-                        style: const TextStyle(
-                          fontSize: 40,
-                        ),
-                        inputFormatters: [
-                          LengthLimitingTextInputFormatter(100),
-                        ],
-                        decoration: InputDecoration(
-                          errorText: nameErrorText,
-                          hintText: "Edit name",
-                        ),
-                      ),
-                    ),
+              FractionallySizedBox(
+                widthFactor: 1,
+                child: TextField(
+                  controller: nameController,
+                  style: const TextStyle(
+                    fontSize: 40,
+                  ),
+                  inputFormatters: [
+                    LengthLimitingTextInputFormatter(100),
+                  ],
+                  decoration: InputDecoration(
+                    errorText: nameErrorText,
+                    hintText: "Edit name",
+                  ),
+                ),
               ),
               Padding(
                 padding: const EdgeInsets.only(top: 16.0),
