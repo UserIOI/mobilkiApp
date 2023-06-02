@@ -226,44 +226,46 @@ class _StepListState extends State<StepList> {
   _StepListState({required List<note> steps}) : _steps = steps;
   @override
   Widget build(BuildContext context) {
-    return ExpansionPanelList(
-      expansionCallback: (int index, bool isExpanded) {
-        setState(() {
-          _steps[index].isExpanded = !isExpanded;
-        });
-      },
-      children: _steps.map<ExpansionPanel>((note step) {
-        return ExpansionPanel(
-          headerBuilder: (BuildContext context, bool isExpanded) {
-            return ListTile(
-                title: Row(
-              children: [
-                Expanded(
-                    child: Text(step.title, style: TextStyle(fontSize: 16))),
-                TextButton(
-                  onPressed: () => {editNote(step)},
-                  child: Icon(
-                    Icons.edit,
-                    size: 25,
+    return SingleChildScrollView(
+      child: ExpansionPanelList(
+        expansionCallback: (int index, bool isExpanded) {
+          setState(() {
+            _steps[index].isExpanded = !isExpanded;
+          });
+        },
+        children: _steps.map<ExpansionPanel>((note step) {
+          return ExpansionPanel(
+            headerBuilder: (BuildContext context, bool isExpanded) {
+              return ListTile(
+                  title: Row(
+                children: [
+                  Expanded(
+                      child: Text(step.title, style: TextStyle(fontSize: 16))),
+                  TextButton(
+                    onPressed: () => {editNote(step)},
+                    child: Icon(
+                      Icons.edit,
+                      size: 25,
+                    ),
                   ),
-                ),
-                TextButton(
-                  onPressed: () => {deleteNote(step)},
-                  child: Icon(
-                    Icons.delete,
-                    size: 25,
-                  ),
-                )
-              ],
-            ));
-          },
-          body: ListTile(
-            title: Text(step.body),
-            //trailing: ,
-          ),
-          isExpanded: step.isExpanded,
-        );
-      }).toList(),
+                  TextButton(
+                    onPressed: () => {deleteNote(step)},
+                    child: Icon(
+                      Icons.delete,
+                      size: 25,
+                    ),
+                  )
+                ],
+              ));
+            },
+            body: ListTile(
+              title: Text(step.body),
+              //trailing: ,
+            ),
+            isExpanded: step.isExpanded,
+          );
+        }).toList(),
+      ),
     );
   }
 }
