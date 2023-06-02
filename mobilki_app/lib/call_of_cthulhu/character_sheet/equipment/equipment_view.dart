@@ -95,8 +95,21 @@ class _EquipmentViewState extends State<EquipmentView> {
   }
 
   void repositionItem(EquipmentItem item) {
+    int index = _selectedList.indexOf(item);
     setState(() {
-
+      while(index > 0 && _selectedList[index].name.toLowerCase().compareTo(_selectedList[index - 1].name.toLowerCase()) < 0) {
+        EquipmentItem temp = _selectedList[index - 1];
+        _selectedList[index - 1] = _selectedList[index];
+        _selectedList[index] = temp;
+        index -= 1;
+      }
+      while(index < _selectedList.length - 1 && _selectedList[index].name.toLowerCase().compareTo(_selectedList[index + 1].name.toLowerCase()) > 0) {
+        EquipmentItem temp = _selectedList[index + 1];
+        _selectedList[index + 1] = _selectedList[index];
+        _selectedList[index] = temp;
+        index += 1;
+      }
+      saveSelectedListChanges();
     });
   }
 
