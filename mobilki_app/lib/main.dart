@@ -1,15 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
+import 'package:flutter/services.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:mobilki_app/database/player.dart';
 import 'package:mobilki_app/character_sheet.dart';
 import 'database/boxes.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
-
 //* to delete investigator click and hold his/her card
 
 void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await SystemChrome.setPreferredOrientations([
+    DeviceOrientation.portraitUp,
+  ]);
   await Hive.initFlutter();
 
   Hive.registerAdapter(PlayerAdapter());
@@ -124,7 +128,7 @@ class _HomeState extends State<Home> {
                           Toast.LENGTH_SHORT, // Duration of the toast message
                       gravity: ToastGravity
                           .BOTTOM, // Position of the toast message on the screen
-                      backgroundColor: const  Color.fromARGB(255, 56, 56,
+                      backgroundColor: const Color.fromARGB(255, 56, 56,
                           56), // Background color of the toast message
                       textColor:
                           Colors.white, // Text color of the toast message
